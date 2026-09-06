@@ -9,3 +9,9 @@ coverage/
 # exported Figma assets land here; commit them once licensed
 assets/categories/*.png
 !assets/categories/.gitkeep
+
+# Expo
+.expo/
+packages/app/.expo/
+packages/app/android/
+packages/app/ios/

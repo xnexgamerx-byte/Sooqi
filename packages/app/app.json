@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "سوقنا",
+    "slug": "souqna",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "souqna",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "backgroundColor": "#EFEFF4",
+    "extra": {
+      "router": {}
+    },
+    "plugins": ["expo-router"],
+    "android": {
+      "package": "iq.souqna.app",
+      "edgeToEdgeEnabled": true,
+      "adaptiveIcon": { "backgroundColor": "#0B5FD9" }
+    },
+    "ios": {
+      "bundleIdentifier": "iq.souqna.app",
+      "supportsTablet": false
+    }
+  }
+}

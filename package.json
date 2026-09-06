@@ -4,14 +4,18 @@
   "private": true,
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.33.0",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "pnpm --filter @souqna/server run dev",
     "build": "pnpm run typecheck",
-    "typecheck": "tsc --build",
+    "typecheck": "tsc --build && pnpm --filter @souqna/app run typecheck",
     "db:generate": "pnpm --filter @souqna/db run generate",
     "db:push": "pnpm --filter @souqna/db run push",
-    "db:seed": "pnpm --filter @souqna/db run seed"
+    "db:seed": "pnpm --filter @souqna/db run seed",
+    "app": "pnpm --filter @souqna/app run start",
+    "android": "pnpm --filter @souqna/app run android"
   },
   "devDependencies": {
     "typescript": "~5.9.3"
