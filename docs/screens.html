@@ -1,0 +1,1461 @@
+<title>شاشات سوقنا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* ============ chrome tokens (theme-aware) ============ */
+:root{
+  --c-bg:#DFE3EC; --c-bg-2:#EDF0F6; --c-ink:#111725; --c-ink-2:#48546B;
+  --c-muted:#6C7A93; --c-line:#C7CFDD; --c-accent:#0F53D9; --c-surface:#FFFFFF;
+  --c-shadow:0 2px 4px rgba(17,23,37,.06), 0 26px 50px -26px rgba(17,23,37,.40);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --c-bg:#0B0E15; --c-bg-2:#141A26; --c-ink:#E9EEF8; --c-ink-2:#AEBBCF;
+    --c-muted:#7E8CA5; --c-line:#26303F; --c-accent:#6EA2FF; --c-surface:#151C29;
+    --c-shadow:0 2px 4px rgba(0,0,0,.5), 0 28px 56px -26px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --c-bg:#0B0E15; --c-bg-2:#141A26; --c-ink:#E9EEF8; --c-ink-2:#AEBBCF;
+  --c-muted:#7E8CA5; --c-line:#26303F; --c-accent:#6EA2FF; --c-surface:#151C29;
+  --c-shadow:0 2px 4px rgba(0,0,0,.5), 0 28px 56px -26px rgba(0,0,0,.9);
+}
+
+/* ============ app tokens (fixed — this is the product) ============ */
+:root{
+  --bg:#EFEFF4; --sf:#FFFFFF; --sf2:#F6F7F9;
+  --ink:#15171C; --ink2:#5A6270; --mut:#8E939E; --line:#E7E8ED;
+  --blue:#0B5FD9; --blue2:#0A4CAE; --blueSoft:#E7F0FE;
+  --or:#F79E1B; --or2:#E1870A;
+  --dark:#15161A; --red:#E5352B; --green:#0FBF6A;
+}
+
+*{box-sizing:border-box}
+body{
+  direction:rtl; margin:0; background:var(--c-bg); color:var(--c-ink);
+  font-family:"IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+
+/* ============ page chrome ============ */
+.head{max-width:1280px;margin:0 auto;padding:52px 24px 30px}
+.eb{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--c-accent);font-weight:500;margin:0 0 12px;
+}
+h1{
+  font-family:"Alexandria",sans-serif;font-weight:700;font-size:clamp(32px,5.4vw,50px);
+  line-height:1.1;margin:0 0 14px;letter-spacing:-.01em;
+}
+.lede{font-size:16.5px;line-height:1.7;color:var(--c-ink-2);max-width:60ch;margin:0 0 24px}
+.notes{
+  display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--c-muted);
+}
+.notes span{background:var(--c-bg-2);border:1px solid var(--c-line);padding:5px 11px;border-radius:5px}
+.index{display:flex;flex-wrap:wrap;gap:7px;padding-top:22px;border-top:1px solid var(--c-line)}
+.index a{
+  font-size:13px;font-weight:500;color:var(--c-ink-2);text-decoration:none;
+  background:var(--c-surface);border:1px solid var(--c-line);padding:6px 13px;border-radius:20px;
+  transition:border-color .15s, color .15s;
+}
+.index a:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.index a b{
+  font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--c-muted);
+  margin-inline-end:6px;font-size:11px;
+}
+
+/* ============ board ============ */
+.board{
+  max-width:1280px;margin:0 auto;padding:16px 24px 90px;
+  display:grid;gap:52px 34px;
+  grid-template-columns:repeat(auto-fit,minmax(288px,374px));
+  justify-content:center;
+}
+figure{margin:0;scroll-margin-top:24px}
+figcaption{margin:0 0 14px;padding-inline-start:4px}
+figcaption .fn{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--c-muted);
+  display:block;margin-bottom:3px;letter-spacing:.08em;
+}
+figcaption .ft{font-family:"Alexandria",sans-serif;font-weight:600;font-size:17px;line-height:1.3}
+figcaption .fd{font-size:13px;color:var(--c-muted);line-height:1.55;margin-top:3px;max-width:38ch}
+
+/* ============ phone ============ */
+.phone{
+  width:100%;aspect-ratio:374/790;background:var(--bg);border-radius:34px;
+  border:1px solid rgba(0,0,0,.10);box-shadow:var(--c-shadow);
+  overflow:hidden;display:flex;flex-direction:column;position:relative;
+  color:var(--ink);font-size:14px;line-height:1.5;
+}
+.scr{flex:1;overflow-y:auto;overscroll-behavior:contain;background:var(--bg)}
+.scr::-webkit-scrollbar{width:0}
+
+/* status bar */
+.sb{
+  flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:11px 18px 5px;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--sf);
+}
+.sb.on-bg{background:var(--bg)}
+.sb .t{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.sb .ind{display:flex;gap:4px;align-items:center;opacity:.85}
+.sb .ind i{display:block;background:currentColor;border-radius:1px}
+.sb .ind .b1{width:2.5px;height:5px}.sb .ind .b2{width:2.5px;height:7px}
+.sb .ind .b3{width:2.5px;height:9px}.sb .ind .b4{width:2.5px;height:11px}
+.sb .pill{width:22px;height:11px;border:1.4px solid currentColor;border-radius:3px;position:relative;opacity:.7}
+.sb .pill::after{content:"";position:absolute;inset:2px auto 2px 2px;width:11px;background:currentColor;border-radius:1px}
+
+/* app bar */
+.ab{
+  flex:none;background:var(--sf);padding:8px 16px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.ab .ttl{font-family:"Alexandria",sans-serif;font-weight:600;font-size:19px}
+.ab .acts{display:flex;align-items:center;gap:17px;color:var(--ink)}
+.ab .acts .ic{position:relative;display:block;cursor:default}
+.badge{
+  position:absolute;top:-6px;right:-7px;background:var(--red);color:#fff;
+  font-size:9.5px;font-weight:700;min-width:16px;height:16px;border-radius:9px;
+  display:grid;place-items:center;padding:0 4px;border:1.5px solid var(--sf);
+  font-family:"IBM Plex Mono",monospace;
+}
+svg.i{width:22px;height:22px;display:block}
+svg.i.sm{width:18px;height:18px}
+svg.i.xs{width:14px;height:14px}
+svg.i.lg{width:26px;height:26px}
+
+/* logo */
+.logo{display:flex;flex-direction:column;align-items:flex-end;gap:3px;line-height:1}
+.logo .ar{
+  font-family:"Alexandria",sans-serif;font-weight:700;font-size:19px;color:var(--ink);
+  letter-spacing:-.01em;
+}
+.logo .ar b{color:var(--blue);font-weight:700}
+.logo .lat{
+  background:var(--blue);color:#fff;font-family:"Alexandria",sans-serif;font-weight:600;
+  font-size:9.5px;letter-spacing:.16em;padding:2.5px 7px;border-radius:3px;direction:ltr;
+}
+
+/* search */
+.search{
+  margin:0 16px 14px;background:var(--sf2);border:1px solid var(--line);border-radius:13px;
+  height:46px;display:flex;align-items:center;gap:10px;padding:0 13px;color:var(--mut);
+}
+.search .ph{flex:1;font-size:14.5px}
+.flag{
+  width:26px;height:18px;border-radius:3px;overflow:hidden;flex:none;
+  display:flex;flex-direction:column;border:1px solid rgba(0,0,0,.10);
+}
+.flag i{flex:1;display:block}
+.flag .r{background:#CE1126}.flag .w{background:#fff}.flag .k{background:#000}
+
+/* stories */
+.stories{display:flex;gap:11px;padding:2px 16px 16px;overflow-x:auto;background:var(--sf)}
+.stories::-webkit-scrollbar{height:0}
+.story{flex:none;width:62px;height:62px;border-radius:50%;padding:2.5px;position:relative}
+.story .in{
+  width:100%;height:100%;border-radius:50%;border:2px solid var(--sf);
+  display:grid;place-items:center;color:rgba(255,255,255,.9);
+}
+.story.g1{background:linear-gradient(150deg,#0FBF6A,#0B5FD9)}
+.story.g2{background:linear-gradient(150deg,#0B5FD9,#7B3FE4)}
+.story.g3{background:linear-gradient(150deg,#F79E1B,#E5352B)}
+.story.add{background:none;border:2px dashed var(--or)}
+.story.add .in{border:none}
+.story .plus{
+  position:absolute;bottom:-1px;left:-1px;width:21px;height:21px;border-radius:50%;
+  background:var(--blue);border:2px solid var(--sf);color:#fff;display:grid;place-items:center;
+}
+
+/* banner */
+.banner{
+  margin:0 16px 16px;border-radius:15px;overflow:hidden;height:132px;position:relative;
+  background:linear-gradient(105deg,#0B5FD9 0%,#0A4CAE 52%,#0F3B8A 100%);
+  display:flex;align-items:center;padding:0 18px;color:#fff;
+}
+.banner::after{
+  content:"";position:absolute;inset:-40% -20% auto auto;width:190px;height:190px;
+  border-radius:50%;background:rgba(255,255,255,.07);
+}
+.banner .bt{position:relative;z-index:1}
+.banner h4{
+  font-family:"Alexandria",sans-serif;font-weight:700;font-size:19px;margin:0 0 5px;line-height:1.3;
+}
+.banner p{margin:0 0 11px;font-size:12.5px;opacity:.85;line-height:1.5}
+.banner .cta{
+  display:inline-flex;align-items:center;gap:6px;background:var(--or);color:#231301;
+  font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:20px;
+}
+
+/* sections */
+.pad{padding:0 16px}
+.shead{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 12px}
+.shead h3{font-family:"Alexandria",sans-serif;font-weight:600;font-size:17.5px;margin:0}
+.more{display:flex;align-items:center;gap:5px;color:var(--blue);font-size:13.5px;font-weight:600}
+
+/* category grid */
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;padding:0 16px}
+.cat{
+  background:var(--sf);border-radius:13px;padding:11px 5px 9px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:8px;min-height:92px;
+  justify-content:space-between;box-shadow:0 1px 2px rgba(20,22,28,.05);
+}
+.cat .cico{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  background:var(--blueSoft);color:var(--blue);
+}
+.cat .cico.warm{background:#FEF1DC;color:#B8710A}
+.cat .cico.cool{background:#E4F6EE;color:#0A8455}
+.cat .cico.plum{background:#F0EAFB;color:#6A3CC4}
+.cat span{font-size:10.5px;font-weight:600;line-height:1.35;color:var(--ink)}
+
+/* listing grid */
+.lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px 9px;padding:0 16px}
+.card .thumb{
+  aspect-ratio:1/1;border-radius:11px;position:relative;overflow:hidden;
+  display:grid;place-items:center;
+  background:linear-gradient(155deg,hsl(var(--h,215) 30% 89%),hsl(var(--h,215) 26% 77%));
+  color:hsl(var(--h,215) 34% 46%);
+}
+.card .thumb .fav{
+  position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;
+  background:rgba(20,22,28,.55);color:#fff;display:grid;place-items:center;
+}
+.card .thumb .price{
+  position:absolute;bottom:6px;left:6px;background:var(--dark);color:#fff;
+  font-size:10.5px;font-weight:600;padding:3.5px 8px;border-radius:6px;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.card .lt{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.45;font-weight:500}
+
+/* chips */
+.chips{display:flex;gap:8px;padding:10px 16px 12px;overflow-x:auto;background:var(--sf)}
+.chips::-webkit-scrollbar{height:0}
+.chips .ch{
+  flex:none;border:1px solid var(--line);background:var(--sf);border-radius:20px;
+  padding:7px 15px;font-size:13px;font-weight:500;color:var(--ink2);white-space:nowrap;
+}
+.chips .ch.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+
+/* generic card */
+.box{background:var(--sf);border-radius:15px;margin:0 16px 14px;padding:16px;box-shadow:0 1px 2px rgba(20,22,28,.05)}
+.box h4{font-family:"Alexandria",sans-serif;font-weight:600;font-size:16px;margin:0 0 12px}
+.rowsplit{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* profile */
+.prof{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.avatar{
+  width:78px;height:78px;border-radius:50%;background:#DDE1E8;color:#9AA2AE;
+  display:grid;place-items:center;flex:none;
+}
+.prof .nm{font-family:"Alexandria",sans-serif;font-weight:600;font-size:20px;margin:0 0 6px}
+.meta{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:12.5px;margin-bottom:9px}
+.stars{display:flex;gap:2px;color:#D6D9DF;align-items:center}
+.stars .cnt{color:var(--blue);font-size:12px;margin-inline-start:5px;text-decoration:underline}
+.pills{display:flex;gap:8px;margin:13px 0 0;flex-wrap:wrap}
+.pill2{
+  flex:1;min-width:0;background:var(--blueSoft);border-radius:9px;padding:8px 10px;
+  display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink);
+}
+.pill2 .ic{color:var(--blue);flex:none}
+.dashbox{
+  border:1.4px dashed var(--line);border-radius:11px;padding:11px 13px;margin-top:12px;
+}
+.bar{height:5px;border-radius:3px;background:#E4E6EB;margin-top:11px;position:relative}
+.bar i{position:absolute;inset:0 0 0 auto;background:var(--blue);border-radius:3px;display:block}
+.bar .knob{
+  position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--sf);
+  border:2px solid var(--blue);transform:translateY(-50%);
+}
+.btns{display:flex;gap:9px;margin-top:14px}
+.btn{
+  flex:1;background:var(--blue);color:#fff;border-radius:9px;padding:11px;text-align:center;
+  font-weight:600;font-size:13.5px;
+}
+.btn.ghost{background:var(--sf);color:var(--ink);border:1px solid var(--line)}
+.btn.wide{width:100%}
+.btn.or{background:var(--or);color:#231301}
+
+/* socials */
+.socials{display:flex;gap:10px;justify-content:center;margin:16px 0 6px}
+.soc{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+.soc.fb{background:#1877F2}.soc.x{background:#101114}.soc.ml{background:#26B0B5}
+.soc.wa{background:#25D366}.soc.ms{background:#0B84FF}.soc.mo{background:#EDEFF3;color:var(--ink2)}
+
+/* qr */
+.qrwrap{border:1.4px dashed var(--line);border-radius:12px;padding:18px;text-align:center;margin-top:14px}
+.qr{width:126px;height:126px;margin:0 auto;display:grid;grid-template-columns:repeat(21,1fr);gap:0}
+.qr i{display:block;aspect-ratio:1}
+.qr i.on{background:var(--dark)}
+
+/* wallet */
+.wallet{background:var(--dark);border-radius:12px;padding:18px;color:#fff}
+.wallet .amt{font-family:"Alexandria",sans-serif;font-weight:700;font-size:26px;margin-bottom:4px}
+.wallet p{margin:0;font-size:12px;opacity:.7}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+.mini{border:1.4px dashed var(--line);border-radius:10px;padding:10px 12px}
+.mini .mv{
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:"Alexandria",sans-serif;font-weight:600;font-size:18px;
+}
+.mini .ml{font-size:11.5px;color:var(--mut);margin-top:3px}
+.arrowb{
+  width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;
+  display:grid;place-items:center;flex:none;
+}
+.tip{
+  background:var(--blueSoft);border:1.4px dashed #B7D0F7;border-radius:10px;padding:11px 12px;
+  display:flex;gap:9px;font-size:11.5px;line-height:1.55;color:var(--ink2);
+}
+.tip .ic{color:var(--blue);flex:none;margin-top:1px}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
+.tile{
+  background:var(--sf);border-radius:14px;padding:14px;box-shadow:0 1px 2px rgba(20,22,28,.05);
+  display:flex;flex-direction:column;gap:14px;
+}
+.tile .tv{
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:"Alexandria",sans-serif;font-weight:700;font-size:23px;color:var(--blue);
+}
+.tile .tl{font-size:13px;font-weight:600;color:var(--ink)}
+.tile .tv .ic{color:var(--ink)}
+.tile.or .tv .ic{color:var(--or)}
+.tile.star .tv .ic{color:var(--or)}
+
+/* list rows */
+.rows{background:var(--sf);border-radius:14px;margin:0 16px 14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,22,28,.05)}
+.row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 15px;border-bottom:1px solid var(--line);font-size:14px;font-weight:500;
+}
+.row:last-child{border-bottom:0}
+.row .rr{display:flex;align-items:center;gap:9px;color:var(--mut)}
+.row .rr b{color:var(--blue);font-weight:600;font-size:14px}
+.row .lft{display:flex;align-items:center;gap:11px}
+.row .lft .ric{width:30px;height:30px;border-radius:9px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;flex:none}
+
+/* chats */
+.promoblue{
+  margin:0 16px 14px;border-radius:15px;padding:15px;
+  background:linear-gradient(115deg,#0B5FD9,#0A4CAE);color:#fff;
+}
+.promoblue .ph1{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.promoblue .lg{
+  width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.16);
+  display:grid;place-items:center;flex:none;position:relative;
+}
+.promoblue .dot{
+  position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-radius:50%;
+  background:var(--green);border:2px solid #0B5FD9;
+}
+.promoblue .nb{
+  width:26px;height:26px;border-radius:50%;background:#fff;color:var(--blue);
+  display:grid;place-items:center;font-size:11.5px;font-weight:700;flex:none;
+  font-family:"IBM Plex Mono",monospace;
+}
+.promoblue h5{font-family:"Alexandria",sans-serif;font-weight:600;font-size:13.5px;margin:0 0 3px;display:flex;align-items:center;gap:5px}
+.promoblue p{margin:0;font-size:12.5px;line-height:1.5;opacity:.92}
+.promoblue .dt{font-size:11px;opacity:.6;margin-top:6px;font-variant-numeric:tabular-nums}
+.promoblue .sep{border-top:1px dashed rgba(255,255,255,.3);margin:11px 0 9px}
+.promoblue .last{display:flex;align-items:center;gap:9px;font-size:12px}
+.promoblue .lthumb{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:none}
+.verify{
+  margin:0 16px 14px;background:var(--blueSoft);border-radius:14px;padding:14px;
+  display:flex;gap:12px;align-items:center;
+}
+.verify .vt{flex:1}
+.verify h5{font-family:"Alexandria",sans-serif;font-weight:600;font-size:14px;margin:0 0 3px}
+.verify p{margin:0;font-size:11.5px;color:var(--ink2);line-height:1.5}
+.verify .vlink{color:var(--blue);font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px;margin-top:8px}
+.verify .vav{width:52px;height:52px;border-radius:12px;background:#CBD8EC;color:#6E86A8;display:grid;place-items:center;flex:none}
+
+/* chat thread */
+.thread{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.bub{max-width:78%;padding:9px 13px;border-radius:15px;font-size:13.5px;line-height:1.55}
+.bub.them{background:var(--sf);border-bottom-right-radius:5px;align-self:flex-start;color:var(--ink)}
+.bub.me{background:var(--blue);color:#fff;border-bottom-left-radius:5px;align-self:flex-end}
+.bub .tm{font-size:10px;opacity:.6;margin-top:4px;font-variant-numeric:tabular-nums}
+.daysep{text-align:center;font-size:11px;color:var(--mut);margin:4px 0}
+.ctxcard{
+  background:var(--sf);margin:0;padding:10px 16px;display:flex;align-items:center;gap:11px;
+  border-bottom:1px solid var(--line);
+}
+.ctxcard .ct{width:44px;height:44px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(155deg,hsl(210 30% 89%),hsl(210 26% 77%));color:hsl(210 34% 46%)}
+.ctxcard .cn{font-size:13px;font-weight:600;line-height:1.35}
+.ctxcard .cp{font-size:12.5px;color:var(--blue);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.composer{
+  flex:none;background:var(--sf);border-top:1px solid var(--line);padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.composer .fld{
+  flex:1;background:var(--sf2);border:1px solid var(--line);border-radius:20px;
+  padding:9px 14px;font-size:13.5px;color:var(--mut);
+}
+.composer .send{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;flex:none}
+
+/* detail screen */
+.gallery{
+  height:250px;position:relative;display:grid;place-items:center;
+  background:linear-gradient(155deg,hsl(210 32% 88%),hsl(210 28% 74%));color:hsl(210 34% 44%);
+}
+.gallery .gnav{
+  position:absolute;top:14px;right:14px;left:14px;display:flex;justify-content:space-between;
+}
+.gbtn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--ink);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.gcount{
+  position:absolute;bottom:28px;left:14px;background:rgba(20,22,28,.62);color:#fff;
+  font-size:11px;padding:4px 9px;border-radius:20px;font-variant-numeric:tabular-nums;
+}
+.dots{position:absolute;bottom:30px;right:0;left:0;display:flex;justify-content:center;gap:5px}
+.dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.55)}
+.dots i.on{background:#fff;width:14px;border-radius:3px}
+.priceline{font-family:"Alexandria",sans-serif;font-weight:700;font-size:24px;color:var(--blue);font-variant-numeric:tabular-nums}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:11px;overflow:hidden;margin-top:13px}
+.spec div{background:var(--sf);padding:10px 12px}
+.spec .sk{font-size:11px;color:var(--mut);margin-bottom:2px}
+.spec .sv{font-size:13px;font-weight:600}
+.seller{display:flex;align-items:center;gap:11px}
+.seller .sa{width:44px;height:44px;border-radius:50%;background:#DDE1E8;color:#9AA2AE;display:grid;place-items:center;flex:none}
+.actbar{
+  flex:none;background:var(--sf);border-top:1px solid var(--line);padding:11px 14px;
+  display:flex;gap:9px;align-items:center;
+}
+.actbar .ab1{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;padding:12px;font-weight:600;font-size:13.5px}
+.abc{background:var(--blue);color:#fff}
+.abw{background:#25D366;color:#fff}
+.abh{background:var(--sf2);border:1px solid var(--line);color:var(--ink);flex:none;width:46px;justify-content:center}
+
+/* post flow */
+.sheet{padding:0 20px}
+.sheet .stitle{font-family:"Alexandria",sans-serif;font-weight:700;font-size:23px;text-align:center;margin:26px 0 8px;line-height:1.35}
+.sheet .ssub{text-align:center;color:var(--mut);font-size:13.5px;margin:0 0 22px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.pcard{
+  background:var(--sf2);border-radius:14px;padding:14px;min-height:118px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.pcard .pico{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue)}
+.pcard .pico.warm{background:#FEF1DC;color:#B8710A}
+.pcard .pico.cool{background:#E4F6EE;color:#0A8455}
+.pcard .pico.plum{background:#F0EAFB;color:#6A3CC4}
+.pcard .pl{display:flex;align-items:center;gap:5px;font-weight:600;font-size:14.5px}
+.pwide{background:var(--sf2);border-radius:14px;padding:15px;margin-top:11px;display:flex;gap:13px;align-items:flex-start}
+.pwide p{margin:7px 0 0;font-size:12px;color:var(--ink2);line-height:1.6}
+.subrow{
+  background:var(--sf);border-radius:13px;padding:13px 15px;margin-bottom:9px;
+  display:flex;align-items:center;justify-content:space-between;gap:11px;
+  box-shadow:0 1px 2px rgba(20,22,28,.05);
+}
+.subrow .sl{display:flex;align-items:center;gap:12px;font-weight:600;font-size:14.5px}
+.subrow .sico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);flex:none}
+
+/* form */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.field .inp{
+  background:var(--sf);border:1px solid var(--line);border-radius:11px;padding:12px 13px;
+  font-size:14px;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.field .inp.empty{color:var(--mut)}
+.field .inp.ta{min-height:76px;align-items:flex-start}
+.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pslot{
+  aspect-ratio:1;border-radius:11px;border:1.4px dashed var(--line);background:var(--sf);
+  display:grid;place-items:center;color:var(--mut);
+}
+.pslot.filled{border:none;background:linear-gradient(155deg,hsl(210 30% 89%),hsl(210 26% 77%));color:hsl(210 34% 46%);position:relative}
+.pslot .cover{position:absolute;bottom:3px;right:3px;left:3px;background:rgba(20,22,28,.6);color:#fff;font-size:8px;text-align:center;padding:2px;border-radius:4px}
+.seg{display:flex;gap:8px}
+.seg span{
+  flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);
+  background:var(--sf);font-size:13.5px;font-weight:600;color:var(--ink2);
+}
+.seg span.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* filters */
+.frow{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--sf)}
+.frow .fl{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between}
+.frow .fl span{color:var(--mut);font-weight:500;font-variant-numeric:tabular-nums}
+.range{height:4px;background:#E4E6EB;border-radius:2px;position:relative;margin:16px 6px}
+.range i{position:absolute;height:100%;background:var(--blue);border-radius:2px;right:8%;left:32%}
+.range .k{position:absolute;top:50%;width:17px;height:17px;border-radius:50%;background:var(--sf);border:2.5px solid var(--blue);transform:translate(50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1px solid var(--line);background:var(--sf);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:500;color:var(--ink2)}
+.opt.on{background:var(--blueSoft);border-color:var(--blue);color:var(--blue);font-weight:600}
+
+/* tab bar */
+.tabs{
+  flex:none;background:var(--sf);border-top:1px solid var(--line);
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:9px 8px 11px;position:relative;
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--mut);font-size:10px;font-weight:600;text-decoration:none;position:relative;
+}
+.tab.on{color:var(--blue)}
+.tab .tbadge{
+  position:absolute;top:-5px;right:calc(50% - 20px);background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:9px;
+  display:grid;place-items:center;padding:0 4px;border:1.5px solid var(--sf);
+  font-family:"IBM Plex Mono",monospace;
+}
+.tab.fabslot{color:var(--mut)}
+.fab{
+  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  width:56px;height:56px;border-radius:50%;background:var(--or);color:#fff;
+  display:grid;place-items:center;border:4px solid var(--sf);
+  box-shadow:0 5px 14px rgba(247,158,27,.42);
+}
+.fab .pl{position:absolute;bottom:9px;left:9px;width:15px;height:15px;border-radius:50%;background:var(--or2);border:2px solid var(--or);display:grid;place-items:center}
+.homebar{height:5px;width:118px;background:#C9CCD3;border-radius:3px;margin:6px auto 7px}
+
+/* empty note */
+.hint{
+  text-align:center;color:var(--mut);font-size:11px;padding:14px 20px 20px;line-height:1.6;
+}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:3px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<svg class="sprite" aria-hidden="true"><symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14 5.7 8.8A2 2 0 0 1 7.6 7.4h8.8a2 2 0 0 1 1.9 1.4L20 14"/><rect x="3" y="14" width="18" height="4.4" rx="1.4"/><path d="M6.6 18.4v1.4M17.4 18.4v1.4M6.6 16.2h1.6M15.8 16.2h1.6"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.6"/><path d="M8 7.2h2M14 7.2h2M8 11h2M14 11h2M8 14.8h2M14 14.8h2"/><path d="M10.3 21v-2.6h3.4V21"/></symbol>
+<symbol id="i-moto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.4" cy="16.4" r="3.3"/><circle cx="18.6" cy="16.4" r="3.3"/><path d="M8.7 16.4h5.2l1.9-5.8h-3.4"/><path d="M14.4 10.6 12.5 7.6h3.6"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.4h15.2v9.8a1.5 1.5 0 0 1-1.5 1.5H5.9a1.5 1.5 0 0 1-1.5-1.5z"/><path d="m3 9.4 1.6-4.3A1.5 1.5 0 0 1 6 4.2h12a1.5 1.5 0 0 1 1.4 .9L21 9.4"/><path d="M9.6 20.7v-6.2h4.8v6.2"/></symbol>
+<symbol id="i-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6.4" y="2.6" width="11.2" height="18.8" rx="2.4"/><path d="M10.6 5.6h2.8M11 18.6h2"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.9v2.3M12 18.8v2.3M21.1 12h-2.3M5.2 12H2.9M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6M18.4 18.4l-1.6-1.6M7.2 7.2 5.6 5.6"/></symbol>
+<symbol id="i-brief" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="7" width="18.4" height="13.2" rx="2"/><path d="M8.6 7V5.5a1.6 1.6 0 0 1 1.6-1.6h3.6A1.6 1.6 0 0 1 15.4 5.5V7"/><path d="M2.8 12.6h18.4"/></symbol>
+<symbol id="i-keyhouse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 10.6 12 3.4l8.6 7.2"/><path d="M5.6 9.3V20a.9.9 0 0 0 .9.9h11a.9.9 0 0 0 .9-.9V9.3"/><circle cx="12" cy="13.4" r="1.7"/><path d="M12 15.1v2.7"/></symbol>
+<symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4" width="18.8" height="12.4" rx="2"/><path d="M8 20.3h8M12 16.4v3.9"/></symbol>
+<symbol id="i-fit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 8.6v6.8M3.9 10.4v3.2M17.4 8.6v6.8M20.1 10.4v3.2M6.6 12h10.8"/></symbol>
+<symbol id="i-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 7.8h8.8a5 5 0 0 1 5 5v.7a3.3 3.3 0 0 1-5.9 2.1l-.9-1.2H9.4l-.9 1.2a3.3 3.3 0 0 1-5.9-2.1v-.7a5 5 0 0 1 5-5z"/><path d="M7 11v2.2M5.9 12.1h2.2"/><circle cx="16.1" cy="11.5" r=".95" fill="currentColor" stroke="none"/><circle cx="17.9" cy="13.4" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.6" y="4.6" width="14.8" height="10.4" rx="1.5"/><path d="M2.6 18.4h18.8"/></symbol>
+<symbol id="i-paw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7.8" cy="8.4" rx="1.7" ry="2.2"/><ellipse cx="12.3" cy="6.9" rx="1.7" ry="2.3"/><ellipse cx="16.8" cy="8.8" rx="1.7" ry="2.1"/><path d="M12.3 12.3c2.7 0 4.8 1.9 4.8 4a2.7 2.7 0 0 1-3.7 2.5 4.2 4.2 0 0 0-2.5 0 2.7 2.7 0 0 1-3.7-2.5c0-2.1 2.4-4 5.1-4z"/></symbol>
+<symbol id="i-shirt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3.6 3 2.2 3-2.2 4.6 2.4-1.7 4.1-2-.8V20a.9.9 0 0 1-.9.9H8.9A.9.9 0 0 1 8 20V9.3l-2 .8-1.7-4.1z"/></symbol>
+<symbol id="i-sofa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 11.2V8.4a2.2 2.2 0 0 1 2.2-2.2h9.2a2.2 2.2 0 0 1 2.2 2.2v2.8"/><path d="M3 15.4a2.2 2.2 0 0 1 4.4 0v1.3h9.2v-1.3a2.2 2.2 0 0 1 4.4 0v3.5H3z"/><path d="M7.4 16.7v-3.2a1.4 1.4 0 0 1 1.4-1.4h6.4a1.4 1.4 0 0 1 1.4 1.4v3.2"/></symbol>
+<symbol id="i-washer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.6" y="2.8" width="14.8" height="18.4" rx="2.2"/><circle cx="12" cy="14" r="4.2"/><path d="M8 6.4h1.8M14.4 6.4h1.4"/></symbol>
+<symbol id="i-shelf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="17.2" height="17.2" rx="1.6"/><path d="M3.4 9.2h17.2M3.4 14.8h17.2M9.2 3.4v17.2"/></symbol>
+<symbol id="i-beauty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7.8" y="9.2" width="8.4" height="11.6" rx="2.2"/><path d="M10.3 9.2V6.6h3.4v2.6"/><rect x="10.1" y="3.2" width="3.8" height="3.4" rx="1.1"/></symbol>
+<symbol id="i-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.8a8 8 0 0 1 16 0z"/><path d="M4 13.2h16"/><path d="M4.7 16.6h14.6a4 4 0 0 1-4 3.4H8.7a4 4 0 0 1-4-3.4z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 4.6A1.6 1.6 0 0 1 6.2 3H19v18.2H6.2a1.6 1.6 0 0 1-1.6-1.6z"/><path d="M4.6 17.6H19"/><path d="M8.6 3v14.6"/></symbol>
+<symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.8" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="18.2" cy="12" r="1.9" fill="currentColor"/></symbol>
+<symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 9 12 4.7 21.4 9 12 13.3z"/><path d="M6.6 11.1v4.4c0 1.5 2.4 2.7 5.4 2.7s5.4-1.2 5.4-2.7v-4.4"/><path d="M21.4 9v4.4"/></symbol>
+<symbol id="i-idsearch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="4.6" width="18.4" height="14.8" rx="2"/><circle cx="8.8" cy="10.4" r="2.1"/><path d="M5.5 15.8c.6-1.6 1.8-2.4 3.3-2.4s2.7.8 3.3 2.4"/><path d="M14.8 9.6h3.6M14.8 12.6h3.6"/></symbol>
+<symbol id="i-chatstar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.6A1.6 1.6 0 0 1 4.6 4h14.8A1.6 1.6 0 0 1 21 5.6v8.6a1.6 1.6 0 0 1-1.6 1.6H9l-4.5 3.6v-3.6a1.6 1.6 0 0 1-1.5-1.6z"/><path d="m12 7.2 1.1 2.2 2.4.35-1.75 1.7.4 2.4L12 12.72l-2.15 1.13.4-2.4-1.75-1.7 2.4-.35z"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.8A1.8 1.8 0 0 1 5 7h2.4l1.3-2h6.6l1.3 2H19a1.8 1.8 0 0 1 1.8 1.8v8.6A1.8 1.8 0 0 1 19 19.2H5a1.8 1.8 0 0 1-1.8-1.8z"/><circle cx="12" cy="12.6" r="3.3"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 3.4h2.9l1.6 4-2 1.4a12.2 12.2 0 0 0 6.3 6.3l1.4-2 4 1.6v2.9a1.6 1.6 0 0 1-1.8 1.6C11.2 18.5 5.5 12.8 4.8 5.2A1.6 1.6 0 0 1 6.4 3.4z"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.5 5.4 1.5 5.4H4.9s1.5-1.4 1.5-5.4z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3 4.9 13.5a4.4 4.4 0 1 1 6.2-6.2l.9.9.9-.9a4.4 4.4 0 1 1 6.2 6.2z"/></symbol>
+<symbol id="i-heartf" viewBox="0 0 24 24"><path d="M12 20.3 4.9 13.5a4.4 4.4 0 1 1 6.2-6.2l.9.9.9-.9a4.4 4.4 0 1 1 6.2 6.2z" fill="currentColor"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.4"/><path d="m15.9 15.9 4.5 4.5"/></symbol>
+<symbol id="i-chevl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 5.4 8 12l6.6 6.6"/></symbol>
+<symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.4 16 12l-6.6 6.6"/></symbol>
+<symbol id="i-arrowl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4.4M10.6 5.6 4 12l6.6 6.4"/></symbol>
+<symbol id="i-arrowr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15.6M13.4 5.6 20 12l-6.6 6.4"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m5.6 5.6 12.8 12.8M18.4 5.6 5.6 18.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5.2v13.6M5.2 12h13.6"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.6 2.6 5.3 5.9.85-4.25 4.15 1 5.8L12 16.85 6.75 19.7l1-5.8L3.5 9.75l5.9-.85z" fill="currentColor"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1.9 12S5.7 5.6 12 5.6 22.1 12 22.1 12 18.3 18.4 12 18.4 1.9 12 1.9 12z"/><circle cx="12" cy="12" r="2.9"/></symbol>
+<symbol id="i-ads" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.2" y="3" width="15.6" height="18" rx="2.2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.6A1.6 1.6 0 0 1 4.6 4h14.8A1.6 1.6 0 0 1 21 5.6v8.6a1.6 1.6 0 0 1-1.6 1.6H9l-4.5 3.6v-3.6A1.6 1.6 0 0 1 3 14.2z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 10.6 12 3.6l8.6 7"/><path d="M5.6 9.4V20a.9.9 0 0 0 .9.9h11a.9.9 0 0 0 .9-.9V9.4"/><path d="M9.8 20.9v-5.4h4.4v5.4"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.8"/><path d="M4.6 20.4c.9-3.8 3.8-5.9 7.4-5.9s6.5 2.1 7.4 5.9"/></symbol>
+<symbol id="i-userf" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="4.2" fill="currentColor"/><path d="M4 21c.9-4.2 4-6.6 8-6.6s7.1 2.4 8 6.6z" fill="currentColor"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8.6" y="8.6" width="10.8" height="10.8" rx="2"/><path d="M15.4 5.6H6.6a2 2 0 0 0-2 2v8.8"/></symbol>
+<symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.4a5.8 5.8 0 1 1 6 0V19a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19z"/><path d="M10.2 22h3.6"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 3.4h7.4L19 8.8v11.8H6.2z"/><path d="M13.6 3.4v5.4H19"/><path d="M9 13.4h7M9 16.6h5"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path d="m12 2.4 2.4 1.8 3-.2.9 2.8 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.8-3-.2L12 21.6l-2.4-1.8-3 .2-.9-2.8L3.2 15.5l1-2.8-1-2.8 2.5-1.7.9-2.8 3 .2z" fill="currentColor"/><path d="m8.7 12 2.2 2.2 4.4-4.6" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 21.4v-8.1h2.7l.4-3.1h-3.1V8.2c0-.9.3-1.5 1.6-1.5h1.7V3.9a22 22 0 0 0-2.5-.13c-2.5 0-4.2 1.5-4.2 4.3v2.1H7.4v3.1h2.7v8.1z" fill="currentColor"/></symbol>
+<symbol id="i-xcom" viewBox="0 0 24 24"><path d="M3.2 3.2h4.6l4.3 5.8 5-5.8h2.3l-6.2 7.2 6.9 9.4h-4.6l-4.7-6.3-5.4 6.3H3.1l6.7-7.8z" fill="currentColor"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="5" width="18.8" height="14" rx="2.2"/><path d="m3.6 7.2 8.4 5.8 8.4-5.8"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 20.6 4.9 16.3A8.2 8.2 0 1 1 8.1 19.4z"/><path d="M9.2 9.2c.35 2.4 2.3 4.35 4.7 4.7l.95-1.3 1.9.9v1.4c0 .6-.5 1.05-1.1 1a8.3 8.3 0 0 1-7.45-7.45c-.05-.6.4-1.1 1-1.1h1.4l.9 1.9z"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M12 2.4c-5.4 0-9.6 4-9.6 9.2a8.9 8.9 0 0 0 3.7 7.2v3.2l3.4-1.9c.8.22 1.65.34 2.5.34 5.4 0 9.6-4 9.6-9.2S17.4 2.4 12 2.4zm.95 12L10.5 11.8 5.7 14.4l5.3-5.6 2.5 2.6 4.7-2.6z" fill="currentColor"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.4"/><path d="M3 10.2h18"/><circle cx="17" cy="14.6" r="1.2" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-loc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.4s6.6-5.6 6.6-11a6.6 6.6 0 1 0-13.2 0c0 5.4 6.6 11 6.6 11z"/><circle cx="12" cy="10.2" r="2.4"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="5" width="17.2" height="16" rx="2.2"/><path d="M3.4 9.6h17.2M8.2 3v4M15.8 3v4"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="17.6" cy="5.8" r="2.6"/><circle cx="6.4" cy="12" r="2.6"/><circle cx="17.6" cy="18.2" r="2.6"/><path d="m8.7 10.7 6.6-3.6M8.7 13.3l6.6 3.6"/></symbol>
+<symbol id="i-flt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 6.4h16.8M6.6 12h10.8M10 17.6h4"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M20.6 3.4 2.8 11.2l6.6 2.4 2.4 6.6z" fill="currentColor"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.2 2"/></symbol>
+<symbol id="i-carrep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.8" width="13" height="18.4" rx="2"/><path d="M7.4 7.4h6.2M7.4 11h6.2M7.4 14.6h4"/><path d="M17 8.6h2.2a1.8 1.8 0 0 1 1.8 1.8v8.4a1.4 1.4 0 0 1-2.8 0V15H17"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.6 4.6 4.6 9.8-10.4"/></symbol>
+</svg>
+
+<header class="head">
+  <p class="eb">تصميم واجهات · النسخة الأولى · ١١ شاشة</p>
+  <h1>شاشات سوقنا</h1>
+  <p class="lede">
+    التخطيط والتسلسل مأخوذان بالكامل من التطبيق المرجعي الذي أرسلته: نفس شبكة الأقسام،
+    نفس بطاقات الإعلانات بشارة السعر والقلب، نفس شريط التنقّل بالزر البرتقالي في الوسط.
+    الهوية اللونية والاسم لك، والشاشات الأربع الناقصة في صورك مضافة هنا لأن التطبيق لا يعمل بدونها.
+  </p>
+  <div class="notes">
+    <span>‏٣٧٤ × ٧٩٠ بكسل</span>
+    <span>عربي من اليمين لليسار</span>
+    <span>كل شاشة قابلة للتمرير داخلياً</span>
+    <span>مربعات الصور مواضع بديلة</span>
+  </div>
+  <nav class="index">
+    <a href="#s1"><b>01</b>الرئيسية</a>
+    <a href="#s2"><b>02</b>التصفح والرائجة</a>
+    <a href="#s3"><b>03</b>تفاصيل الإعلان</a>
+    <a href="#s4"><b>04</b>البحث والفلاتر</a>
+    <a href="#s5"><b>05</b>اختيار القسم</a>
+    <a href="#s6"><b>06</b>القسم الفرعي</a>
+    <a href="#s7"><b>07</b>نموذج الإعلان</a>
+    <a href="#s8"><b>08</b>دردشاتي</a>
+    <a href="#s9"><b>09</b>المحادثة</a>
+    <a href="#s10"><b>10</b>إعلاناتي</a>
+    <a href="#s11"><b>11</b>حسابي</a>
+  </nav>
+</header>
+
+<main class="board">
+
+<!-- ============ 01 HOME ============ -->
+<figure id="s1">
+  <figcaption>
+    <span class="fn">01</span>
+    <span class="ft">الرئيسية</span>
+    <span class="fd">القصص، البانر، وشبكة الأقسام كاملة. مرّر داخل الشاشة لبقية الأقسام.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb">
+      <span class="t">١٠:٢١</span>
+      <span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span>
+    </div>
+    <div class="scr">
+      <div class="ab">
+        <div class="acts">
+          <span class="ic"><svg class="i"><use href="#i-phone"/></svg></span>
+          <span class="ic"><svg class="i"><use href="#i-bell"/></svg><span class="badge">8</span></span>
+          <span class="ic" style="color:var(--red)"><svg class="i"><use href="#i-heartf"/></svg></span>
+        </div>
+        <div class="logo"><span class="ar">سوق<b>نا</b></span><span class="lat">SOUQNA</span></div>
+      </div>
+      <div style="background:var(--sf)">
+        <div class="search">
+          <svg class="i sm"><use href="#i-search"/></svg>
+          <span class="ph">ابحث في سوقنا…</span>
+          <span class="flag"><i class="r"></i><i class="w"></i><i class="k"></i></span>
+        </div>
+        <div class="stories">
+          <div class="story add"><div class="in" style="color:var(--or)"><svg class="i lg"><use href="#i-camera"/></svg></div><span class="plus"><svg class="i xs"><use href="#i-plus"/></svg></span></div>
+          <div class="story g1"><div class="in" style="background:#CFE0F5;color:#4C7CB5"><svg class="i lg"><use href="#i-car"/></svg></div></div>
+          <div class="story g2"><div class="in" style="background:#E2DBF6;color:#6A55B0"><svg class="i lg"><use href="#i-mobile"/></svg></div></div>
+          <div class="story g3"><div class="in" style="background:#F7E2CC;color:#A9721F"><svg class="i lg"><use href="#i-sofa"/></svg></div></div>
+          <div class="story g1"><div class="in" style="background:#D3EBDF;color:#3E7D5C"><svg class="i lg"><use href="#i-building"/></svg></div></div>
+          <div class="story g2"><div class="in" style="background:#E8DDD5;color:#8A6A55"><svg class="i lg"><use href="#i-paw"/></svg></div></div>
+        </div>
+        <div class="banner">
+          <div class="bt">
+            <h4>قسم السيارات صار متوفر</h4>
+            <p>أكثر من ٦٠٠ سيارة معروضة في بغداد</p>
+            <span class="cta">تصفّح الآن <svg class="i xs"><use href="#i-arrowl"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="shead"><h3>الأقسام</h3><span class="more">المزيد <svg class="i xs"><use href="#i-arrowl"/></svg></span></div>
+      <div class="cgrid">
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-store"/></svg></span><span>المتاجر</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-car"/></svg></span><span>سيارات ومركبات</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-moto"/></svg></span><span>دراجات نارية</span></div>
+        <div class="cat"><span class="cico cool"><svg class="i lg"><use href="#i-building"/></svg></span><span>عقارات للبيع</span></div>
+        <div class="cat"><span class="cico warm"><svg class="i lg"><use href="#i-keyhouse"/></svg></span><span>عقارات للإيجار</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-brief"/></svg></span><span>وظائف شاغرة</span></div>
+        <div class="cat"><span class="cico warm"><svg class="i lg"><use href="#i-gear"/></svg></span><span>الخدمات</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-mobile"/></svg></span><span>موبايل و تابلت</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-laptop"/></svg></span><span>لابتوب وكمبيوتر</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-game"/></svg></span><span>ألعاب الفيديو</span></div>
+        <div class="cat"><span class="cico cool"><svg class="i lg"><use href="#i-fit"/></svg></span><span>معدات رياضية</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-tv"/></svg></span><span>الكترونيات</span></div>
+        <div class="cat"><span class="cico warm"><svg class="i lg"><use href="#i-washer"/></svg></span><span>أجهزة منزلية</span></div>
+        <div class="cat"><span class="cico cool"><svg class="i lg"><use href="#i-sofa"/></svg></span><span>منزل وحديقة</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-shirt"/></svg></span><span>موضة وأطفال</span></div>
+        <div class="cat"><span class="cico warm"><svg class="i lg"><use href="#i-paw"/></svg></span><span>حيوانات</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-shelf"/></svg></span><span>تجهيزات الشركات</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-beauty"/></svg></span><span>جمال وصحة</span></div>
+        <div class="cat"><span class="cico warm"><svg class="i lg"><use href="#i-food"/></svg></span><span>طعام وغذاء</span></div>
+        <div class="cat"><span class="cico cool"><svg class="i lg"><use href="#i-book"/></svg></span><span>ترفيه وكتب</span></div>
+        <div class="cat"><span class="cico"><svg class="i lg"><use href="#i-cap"/></svg></span><span>تدريس وتدريب</span></div>
+        <div class="cat"><span class="cico cool"><svg class="i lg"><use href="#i-idsearch"/></svg></span><span>باحثين عن عمل</span></div>
+        <div class="cat"><span class="cico plum"><svg class="i lg"><use href="#i-chatstar"/></svg></span><span>التقييمات والآراء</span></div>
+        <div class="cat"><span class="cico" style="background:#EAEDF2;color:var(--blue)"><svg class="i lg"><use href="#i-dots"/></svg></span><span>جميع الأقسام</span></div>
+      </div>
+
+      <div class="box" style="margin-top:18px;display:flex;gap:13px;align-items:center">
+        <div style="flex:1">
+          <h4 style="margin-bottom:5px">وصلك إعلان جديد؟</h4>
+          <p style="margin:0 0 12px;font-size:12px;color:var(--ink2);line-height:1.55">احفظ بحثك ونرسل لك تنبيهاً أول ما ينزل إعلان يطابقه</p>
+          <span class="btn or" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:22px;font-size:13px"><svg class="i xs"><use href="#i-bell"/></svg> فعّل التنبيه</span>
+        </div>
+        <div style="width:74px;height:74px;border-radius:14px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;flex:none"><svg class="i" style="width:32px;height:32px"><use href="#i-search"/></svg></div>
+      </div>
+      <p class="hint">نهاية الشاشة</p>
+    </div>
+    <nav class="tabs">
+      <a class="tab on" href="#s1"><svg class="i"><use href="#i-home"/></svg>الرئيسية</a>
+      <a class="tab" href="#s8"><svg class="i"><use href="#i-chat"/></svg>دردشاتي<span class="tbadge">12</span></a>
+      <a class="tab fabslot" href="#s5"><span class="fab"><svg class="i lg"><use href="#i-camera"/></svg><span class="pl"><svg class="i" style="width:8px;height:8px"><use href="#i-plus"/></svg></span></span><span style="margin-top:40px">أضف إعلان</span></a>
+      <a class="tab" href="#s10"><svg class="i"><use href="#i-ads"/></svg>إعلاناتي</a>
+      <a class="tab" href="#s11"><svg class="i"><use href="#i-user"/></svg>حسابي</a>
+    </nav>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 02 BROWSE ============ -->
+<figure id="s2">
+  <figcaption>
+    <span class="fn">02</span>
+    <span class="ft">التصفح والرائجة</span>
+    <span class="fd">شرائح الأقسام ثابتة أعلى الشاشة، والشبكة الثلاثية بشارة السعر والقلب.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٢</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div style="background:var(--sf);padding-top:6px">
+        <div class="search">
+          <svg class="i sm"><use href="#i-search"/></svg>
+          <span class="ph">ابحث في سوقنا…</span>
+          <span class="flag"><i class="r"></i><i class="w"></i><i class="k"></i></span>
+        </div>
+        <div class="chips">
+          <span class="ch on">الكل</span>
+          <span class="ch">سيارات ومركبات</span>
+          <span class="ch">عقارات</span>
+          <span class="ch">وظائف</span>
+          <span class="ch">خدمات</span>
+          <span class="ch">موبايلات</span>
+        </div>
+      </div>
+
+      <div class="shead"><h3>الرائجة الآن</h3><span class="more">المزيد <svg class="i xs"><use href="#i-arrowl"/></svg></span></div>
+      <div class="lgrid">
+        <a class="card" href="#s3" style="text-decoration:none;color:inherit"><div class="thumb" style="--h:210"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-washer"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٣٠٠٬٠٠٠ د.ع</span></div><div class="lt">ثلاجة LG · مستعملة</div></a>
+        <div class="card"><div class="thumb" style="--h:32"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-sofa"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٩٥٠٬٠٠٠ د.ع</span></div><div class="lt">غرفة نوم كاملة</div></div>
+        <div class="card"><div class="thumb" style="--h:150"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-paw"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٦٠٬٠٠٠ د.ع</span></div><div class="lt">ببغاء كوكتيل</div></div>
+        <div class="card"><div class="thumb" style="--h:260"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-mobile"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٨٢٠٬٠٠٠ د.ع</span></div><div class="lt">آيفون ١٥ برو · كفالة</div></div>
+        <div class="card"><div class="thumb" style="--h:190"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-tv"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٤٧٥٬٠٠٠ د.ع</span></div><div class="lt">شاشة ٥٥ بوصة</div></div>
+        <div class="card"><div class="thumb" style="--h:12"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-laptop"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">١٬١٥٠٬٠٠٠ د.ع</span></div><div class="lt">لابتوب ديل i7</div></div>
+      </div>
+
+      <div class="shead"><h3>سيارات ومركبات</h3><span class="more">المزيد <svg class="i xs"><use href="#i-arrowl"/></svg></span></div>
+      <div class="lgrid">
+        <div class="card"><div class="thumb" style="--h:0"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٢٠٬٧٣٥٬٠٠٠</span></div><div class="lt">هيونداي النترا · ٢٠٢٣</div></div>
+        <div class="card"><div class="thumb" style="--h:222"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">١٧٬٤٠٠٬٠٠٠</span></div><div class="lt">كيا فورتي · ٢٠١٩</div></div>
+        <div class="card"><div class="thumb" style="--h:96"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">١٢٬٩٠٥٬٠٠٠</span></div><div class="lt">كيا سول · ٢٠١٨</div></div>
+        <div class="card"><div class="thumb" style="--h:40"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٣٧٬٧٠٠٬٠٠٠</span></div><div class="lt">تويوتا برادو · ٢٠١٤</div></div>
+        <div class="card"><div class="thumb" style="--h:276"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٣٤٬٨٠٠٬٠٠٠</span></div><div class="lt">دودج تشارجر · ٢٠٢٣</div></div>
+        <div class="card"><div class="thumb" style="--h:170"><svg class="i" style="width:34px;height:34px;opacity:.55"><use href="#i-car"/></svg><span class="fav"><svg class="i xs"><use href="#i-heart"/></svg></span><span class="price">٣١٬٩٠٠٬٠٠٠</span></div><div class="lt">شيفروليه سلفرادو · ٢٠٢٤</div></div>
+      </div>
+      <p class="hint">تحميل المزيد عند التمرير</p>
+    </div>
+    <nav class="tabs">
+      <a class="tab on" href="#s1"><svg class="i"><use href="#i-home"/></svg>الرئيسية</a>
+      <a class="tab" href="#s8"><svg class="i"><use href="#i-chat"/></svg>دردشاتي<span class="tbadge">12</span></a>
+      <a class="tab fabslot" href="#s5"><span class="fab"><svg class="i lg"><use href="#i-camera"/></svg><span class="pl"><svg class="i" style="width:8px;height:8px"><use href="#i-plus"/></svg></span></span><span style="margin-top:40px">أضف إعلان</span></a>
+      <a class="tab" href="#s10"><svg class="i"><use href="#i-ads"/></svg>إعلاناتي</a>
+      <a class="tab" href="#s11"><svg class="i"><use href="#i-user"/></svg>حسابي</a>
+    </nav>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 03 DETAIL ============ -->
+<figure id="s3">
+  <figcaption>
+    <span class="fn">03</span>
+    <span class="ft">تفاصيل الإعلان</span>
+    <span class="fd">غير موجودة في صورك وهي أهم شاشة: هنا تُغلق الصفقة. شريط الاتصال ثابت أسفل الشاشة.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb on-bg"><span class="t">١٠:٢٦</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="gallery">
+        <svg class="i" style="width:56px;height:56px;opacity:.5"><use href="#i-car"/></svg>
+        <div class="gnav">
+          <span class="gbtn"><svg class="i sm"><use href="#i-share"/></svg></span>
+          <span class="gbtn"><svg class="i sm"><use href="#i-arrowr"/></svg></span>
+        </div>
+        <span class="gcount">١ / ١٢</span>
+        <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="box" style="margin-top:-16px;position:relative;z-index:2">
+        <div class="rowsplit" style="align-items:flex-start">
+          <div style="flex:1">
+            <div class="priceline">١٢٬٩٠٥٬٠٠٠ د.ع</div>
+            <h4 style="margin:7px 0 0;font-size:16px;line-height:1.45">كيا سول ٢٠١٨ · وارد أمريكي · فحص كامل</h4>
+          </div>
+          <span style="width:38px;height:38px;border-radius:50%;background:var(--sf2);color:var(--ink2);display:grid;place-items:center;flex:none"><svg class="i sm"><use href="#i-heart"/></svg></span>
+        </div>
+        <div class="meta" style="margin:11px 0 0"><svg class="i xs"><use href="#i-loc"/></svg> بغداد · الكرادة <span style="margin:0 4px">·</span> <svg class="i xs"><use href="#i-clock"/></svg> قبل ٣ ساعات</div>
+        <div class="spec">
+          <div><div class="sk">الماركة</div><div class="sv">كيا</div></div>
+          <div><div class="sk">الموديل</div><div class="sv">سول</div></div>
+          <div><div class="sk">سنة الصنع</div><div class="sv">٢٠١٨</div></div>
+          <div><div class="sk">المسافة</div><div class="sv">٩٨٬٠٠٠ كم</div></div>
+          <div><div class="sk">ناقل الحركة</div><div class="sv">أوتوماتيك</div></div>
+          <div><div class="sk">الحالة</div><div class="sv">مستعمل</div></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h4>الوصف</h4>
+        <p style="margin:0;font-size:13.5px;line-height:1.75;color:var(--ink2)">
+          السيارة بحالة ممتازة، ماشية ٩٨ ألف كم أصلي. صبغ وكالة عدا الرفرف الأيمن.
+          فحص كامل عند أي كراج. السعر قابل للتفاوض البسيط، والبيع لعدم الحاجة.
+        </p>
+      </div>
+
+      <div class="box">
+        <div class="seller">
+          <span class="sa"><svg class="i lg"><use href="#i-userf"/></svg></span>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:5px;font-weight:600;font-size:15px">
+              أبو مصطفى <svg class="i xs" style="color:var(--blue)"><use href="#i-verified"/></svg>
+            </div>
+            <div class="meta" style="margin:4px 0 0">عضو منذ ٢٠٢٤ · ١٧ إعلاناً</div>
+          </div>
+          <span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>
+        </div>
+      </div>
+
+      <div class="box" style="display:flex;gap:10px;align-items:flex-start;background:#FFF7E8">
+        <span style="color:var(--or2);flex:none;margin-top:1px"><svg class="i sm"><use href="#i-bulb"/></svg></span>
+        <p style="margin:0;font-size:12px;line-height:1.65;color:#7A5410">
+          لا تدفع أي مبلغ قبل معاينة السيارة. سوقنا لا يتوسّط في الدفع ولا يضمن أي صفقة.
+        </p>
+      </div>
+
+      <div style="padding:0 16px 16px">
+        <div class="row" style="background:var(--sf);border-radius:12px;border:0;padding:13px 15px">
+          <span style="color:var(--red);font-weight:600;font-size:13.5px">الإبلاغ عن هذا الإعلان</span>
+          <svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg>
+        </div>
+      </div>
+      <p class="hint">إعلانات مشابهة أسفل الصفحة</p>
+    </div>
+    <div class="actbar">
+      <span class="ab1 abh"><svg class="i sm"><use href="#i-chat"/></svg></span>
+      <span class="ab1 abw"><svg class="i sm"><use href="#i-wa"/></svg> واتساب</span>
+      <span class="ab1 abc"><svg class="i sm"><use href="#i-phone"/></svg> اتصال</span>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 04 FILTERS ============ -->
+<figure id="s4">
+  <figcaption>
+    <span class="fn">04</span>
+    <span class="ft">البحث والفلاتر</span>
+    <span class="fd">الحقول تتغيّر حسب القسم: ماركة وموديل وسنة للسيارات، غرف ومساحة للعقار.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٧</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab" style="border-bottom:1px solid var(--line)">
+        <span class="acts"><svg class="i"><use href="#i-x"/></svg></span>
+        <span class="ttl">تصفية النتائج</span>
+        <span style="color:var(--blue);font-weight:600;font-size:13.5px">مسح الكل</span>
+      </div>
+
+      <div class="frow">
+        <div class="fl">القسم</div>
+        <div class="opts">
+          <span class="opt on">سيارات ومركبات</span><span class="opt">موبايلات</span><span class="opt">عقارات</span>
+        </div>
+      </div>
+
+      <div class="frow">
+        <div class="fl">المدينة <span>بغداد · الكرادة</span></div>
+        <div class="opts">
+          <span class="opt on">بغداد</span><span class="opt">البصرة</span><span class="opt">أربيل</span><span class="opt">النجف</span><span class="opt">الموصل</span>
+        </div>
+      </div>
+
+      <div class="frow">
+        <div class="fl">السعر <span>٥ – ٣٥ مليون د.ع</span></div>
+        <div class="range"><i></i><span class="k" style="right:8%"></span><span class="k" style="right:32%"></span></div>
+      </div>
+
+      <div class="frow">
+        <div class="fl">الماركة</div>
+        <div class="opts">
+          <span class="opt on">كيا</span><span class="opt">هيونداي</span><span class="opt">تويوتا</span><span class="opt">شيفروليه</span><span class="opt">دودج</span><span class="opt">نيسان</span>
+        </div>
+      </div>
+
+      <div class="frow">
+        <div class="fl">سنة الصنع <span>٢٠١٥ – ٢٠٢٤</span></div>
+        <div class="range"><i style="right:14%;left:20%"></i><span class="k" style="right:14%"></span><span class="k" style="right:80%"></span></div>
+      </div>
+
+      <div class="frow">
+        <div class="fl">الحالة</div>
+        <div class="opts"><span class="opt on">مستعمل</span><span class="opt">جديد</span><span class="opt">وارد</span></div>
+      </div>
+
+      <div class="frow" style="border-bottom:0">
+        <div class="fl">الترتيب</div>
+        <div class="opts"><span class="opt on">الأحدث</span><span class="opt">الأرخص</span><span class="opt">الأغلى</span></div>
+      </div>
+      <div style="height:12px"></div>
+    </div>
+    <div class="actbar">
+      <span class="ab1 abh" style="width:auto;flex:1;background:var(--sf2)">حفظ البحث</span>
+      <span class="ab1 abc" style="flex:2">عرض ٢٤٧ نتيجة</span>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 05 POST STEP 1 ============ -->
+<figure id="s5">
+  <figcaption>
+    <span class="fn">05</span>
+    <span class="ft">أضف إعلان · اختيار القسم</span>
+    <span class="fd">أول خطوة بعد الزر البرتقالي. أربعة أقسام رئيسية وبطاقة عريضة لبقية الأقسام.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb on-bg"><span class="t">١٠:٢٥</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr" style="background:var(--sf)">
+      <div class="ab" style="padding-top:12px">
+        <span class="acts"><svg class="i"><use href="#i-x"/></svg></span>
+        <span class="acts" style="color:var(--ink2)"><svg class="i"><use href="#i-phone"/></svg></span>
+      </div>
+      <div class="sheet">
+        <h2 class="stitle">شنو تريد تبيع أو تعلن عنه؟</h2>
+        <p class="ssub">اختر القسم المناسب لإضافة الإعلان</p>
+        <div class="pgrid">
+          <a class="pcard" href="#s6" style="text-decoration:none;color:inherit">
+            <span class="pico"><svg class="i" style="width:26px;height:26px"><use href="#i-car"/></svg></span>
+            <span class="pl">سيارات <svg class="i xs" style="color:var(--mut)"><use href="#i-chevl"/></svg></span>
+          </a>
+          <div class="pcard">
+            <span class="pico cool"><svg class="i" style="width:26px;height:26px"><use href="#i-building"/></svg></span>
+            <span class="pl">عقارات <svg class="i xs" style="color:var(--mut)"><use href="#i-chevl"/></svg></span>
+          </div>
+          <div class="pcard">
+            <span class="pico plum"><svg class="i" style="width:26px;height:26px"><use href="#i-brief"/></svg></span>
+            <span class="pl">وظائف <svg class="i xs" style="color:var(--mut)"><use href="#i-chevl"/></svg></span>
+          </div>
+          <div class="pcard">
+            <span class="pico warm"><svg class="i" style="width:26px;height:26px"><use href="#i-gear"/></svg></span>
+            <span class="pl">خدمات <svg class="i xs" style="color:var(--mut)"><use href="#i-chevl"/></svg></span>
+          </div>
+        </div>
+        <a class="pwide" href="#s6" style="text-decoration:none;color:inherit">
+          <span class="pico" style="width:52px;height:52px;border-radius:13px;display:grid;place-items:center;background:#EAEDF2;color:var(--ink2);flex:none"><svg class="i" style="width:26px;height:26px"><use href="#i-dots"/></svg></span>
+          <div>
+            <span class="pl">الأقسام الأخرى <svg class="i xs" style="color:var(--mut)"><use href="#i-chevl"/></svg></span>
+            <p>الموبايلات والإلكترونيات والأثاث والأجهزة المنزلية والموضة والحيوانات وغيرها.</p>
+          </div>
+        </a>
+        <div style="height:26px"></div>
+      </div>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 06 POST STEP 2 ============ -->
+<figure id="s6">
+  <figcaption>
+    <span class="fn">06</span>
+    <span class="ft">أضف إعلان · القسم الفرعي</span>
+    <span class="fd">قائمة قابلة للبحث. الشجرة ثلاثة مستويات فقط حتى لا يضيع المستخدم.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb on-bg"><span class="t">١٠:٢٥</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab" style="background:var(--bg);padding-top:12px">
+        <span class="acts"><svg class="i"><use href="#i-arrowr"/></svg></span>
+        <span class="acts"><svg class="i"><use href="#i-x"/></svg></span>
+      </div>
+      <div class="sheet" style="padding:0 16px">
+        <h2 class="stitle" style="margin-top:14px">شنو تريد تبيع أو تعلن عنه؟</h2>
+        <p class="ssub">اختر القسم المناسب لإضافة الإعلان</p>
+        <div class="search" style="margin:0 0 16px;background:var(--sf)">
+          <svg class="i sm"><use href="#i-search"/></svg>
+          <span class="ph">ابحث في القسم</span>
+        </div>
+        <a class="subrow" href="#s7" style="text-decoration:none;color:inherit"><span class="sl"><span class="sico plum"><svg class="i sm"><use href="#i-mobile"/></svg></span> موبايل و تابلت</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></a>
+        <div class="subrow"><span class="sl"><span class="sico"><svg class="i sm"><use href="#i-tv"/></svg></span> أجهزة إلكترونية ومنزلية</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico plum"><svg class="i sm"><use href="#i-game"/></svg></span> ألعاب وألعاب الفيديو</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico cool"><svg class="i sm"><use href="#i-sofa"/></svg></span> منزل وحديقة</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico warm"><svg class="i sm"><use href="#i-shirt"/></svg></span> موضة وأطفال</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico plum"><svg class="i sm"><use href="#i-beauty"/></svg></span> جمال وصحة</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico warm"><svg class="i sm"><use href="#i-food"/></svg></span> طعام وغذاء</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico cool"><svg class="i sm"><use href="#i-paw"/></svg></span> حيوانات وإكسسوارات</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico"><svg class="i sm"><use href="#i-shelf"/></svg></span> تجهيزات ومعدات الشركات</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div class="subrow"><span class="sl"><span class="sico cool"><svg class="i sm"><use href="#i-book"/></svg></span> ترفيه وكتب ومقتنيات</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        <div style="height:16px"></div>
+      </div>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 07 POST FORM ============ -->
+<figure id="s7">
+  <figcaption>
+    <span class="fn">07</span>
+    <span class="ft">أضف إعلان · النموذج</span>
+    <span class="fd">ناقصة في صورك. الصور أولاً لأنها أكثر ما يُهجر في منتصف الطريق، والحقول تتغيّر حسب القسم.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٨</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab" style="border-bottom:1px solid var(--line)">
+        <span class="acts"><svg class="i"><use href="#i-x"/></svg></span>
+        <span class="ttl">تفاصيل الإعلان</span>
+        <span style="color:var(--mut);font-weight:600;font-size:13px">حفظ كمسودة</span>
+      </div>
+
+      <div style="padding:16px 16px 0">
+        <div class="field">
+          <label>الصور · ٣ من ١٢</label>
+          <div class="photos">
+            <div class="pslot filled"><svg class="i sm"><use href="#i-car"/></svg><span class="cover">الغلاف</span></div>
+            <div class="pslot filled"><svg class="i sm"><use href="#i-car"/></svg></div>
+            <div class="pslot filled"><svg class="i sm"><use href="#i-car"/></svg></div>
+            <div class="pslot"><svg class="i sm"><use href="#i-plus"/></svg></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>عنوان الإعلان</label>
+          <div class="inp">كيا سول ٢٠١٨ وارد أمريكي <span style="color:var(--mut);font-size:11px">٣٤/٧٠</span></div>
+        </div>
+
+        <div class="field">
+          <label>السعر</label>
+          <div class="inp"><span>١٢٬٩٠٥٬٠٠٠</span><span style="color:var(--mut);font-size:12.5px">دينار عراقي</span></div>
+        </div>
+
+        <div class="field">
+          <label>الحالة</label>
+          <div class="seg"><span class="on">مستعمل</span><span>جديد</span><span>وارد</span></div>
+        </div>
+
+        <div class="field">
+          <label>المدينة</label>
+          <div class="inp"><span>بغداد · الكرادة</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        </div>
+
+        <div class="field">
+          <label>الماركة والموديل</label>
+          <div class="inp"><span>كيا · سول · ٢٠١٨</span><svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg></div>
+        </div>
+
+        <div class="field">
+          <label>الوصف</label>
+          <div class="inp ta empty">اكتب حالة السيارة، المسافة المقطوعة، وسبب البيع…</div>
+        </div>
+
+        <div class="field">
+          <label>رقم التواصل</label>
+          <div class="inp"><span>٠٧٧٠ ••• ٤٤٢١</span><span style="display:flex;align-items:center;gap:4px;color:var(--green);font-size:12px;font-weight:600"><svg class="i xs"><use href="#i-check"/></svg> محقّق</span></div>
+        </div>
+
+        <div class="tip" style="margin-bottom:16px">
+          <span class="ic"><svg class="i sm"><use href="#i-bulb"/></svg></span>
+          <span>الإعلانات بست صور أو أكثر تُشاهَد ثلاثة أضعاف. صوّر السيارة في ضوء النهار من الأمام والخلف والداخل.</span>
+        </div>
+      </div>
+    </div>
+    <div class="actbar">
+      <span class="ab1 abc">نشر الإعلان</span>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 08 CHATS ============ -->
+<figure id="s8">
+  <figcaption>
+    <span class="fn">08</span>
+    <span class="ft">دردشاتي</span>
+    <span class="fd">شرائح التصفية بين البيع والشراء وغير المقروء، وبطاقة توثيق الحساب في الأعلى.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٥</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab">
+        <div class="acts">
+          <span class="ic"><svg class="i"><use href="#i-phone"/></svg></span>
+          <span class="ic"><svg class="i"><use href="#i-bell"/></svg></span>
+          <span class="ic"><svg class="i"><use href="#i-gear"/></svg></span>
+        </div>
+        <span class="ttl">دردشاتي</span>
+      </div>
+      <div style="background:var(--sf)">
+        <div class="search"><svg class="i sm"><use href="#i-search"/></svg><span class="ph">ابحث في دردشاتي</span></div>
+        <div class="chips">
+          <span class="ch on">الكل</span><span class="ch">البيع</span><span class="ch">الشراء</span><span class="ch">غير مقروء</span><span class="ch">المفضلة</span>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+      <div class="verify">
+        <span class="vav"><svg class="i lg"><use href="#i-userf"/></svg></span>
+        <div class="vt">
+          <h5>احصل على شارة مستخدم موثّق</h5>
+          <p>ابنِ المصداقية · عزّز الظهور · اكسب الثقة</p>
+          <span class="vlink">وثّق الآن <svg class="i xs"><use href="#i-arrowl"/></svg></span>
+        </div>
+      </div>
+
+      <a class="promoblue" href="#s9" style="text-decoration:none;display:block">
+        <div class="ph1">
+          <span class="nb">3</span>
+          <div style="flex:1;padding:0 11px">
+            <h5>أبو مصطفى <svg class="i xs"><use href="#i-verified"/></svg></h5>
+            <p>زين، أقدر أشوفها باچر الصبح؟</p>
+            <div class="dt">٠٦-٠٩-٢٠٢٦ · ١٠:١٤</div>
+          </div>
+          <span class="lg"><svg class="i sm"><use href="#i-userf"/></svg><span class="dot"></span></span>
+        </div>
+        <div class="sep"></div>
+        <div class="last">
+          <span style="flex:1">كيا سول ٢٠١٨ · ١٢٬٩٠٥٬٠٠٠ د.ع</span>
+          <span class="lthumb"><svg class="i xs"><use href="#i-car"/></svg></span>
+        </div>
+      </a>
+
+      <div class="rows">
+        <div class="row">
+          <span class="lft">
+            <span class="ric" style="background:#E8DDD5;color:#8A6A55"><svg class="i sm"><use href="#i-userf"/></svg></span>
+            <span><span style="display:block">سيف الجبوري</span><span style="font-size:11.5px;color:var(--mut);font-weight:400">آيفون ١٥ برو · آخر سعر؟</span></span>
+          </span>
+          <span class="rr" style="flex-direction:column;align-items:flex-end;gap:5px"><span style="font-size:10.5px">أمس</span><b style="background:var(--red);color:#fff;border-radius:9px;min-width:18px;height:18px;display:grid;place-items:center;font-size:10px">2</b></span>
+        </div>
+        <div class="row">
+          <span class="lft">
+            <span class="ric" style="background:#D3EBDF;color:#3E7D5C"><svg class="i sm"><use href="#i-userf"/></svg></span>
+            <span><span style="display:block">معرض النخبة</span><span style="font-size:11.5px;color:var(--mut);font-weight:400">تفضل زورنا بالمعرض</span></span>
+          </span>
+          <span class="rr"><span style="font-size:10.5px">٠٤ أيلول</span></span>
+        </div>
+        <div class="row">
+          <span class="lft">
+            <span class="ric" style="background:#E2DBF6;color:#6A55B0"><svg class="i sm"><use href="#i-userf"/></svg></span>
+            <span><span style="display:block">هدى ك.</span><span style="font-size:11.5px;color:var(--mut);font-weight:400">الثلاجة مازالت موجودة؟</span></span>
+          </span>
+          <span class="rr"><span style="font-size:10.5px">٠٢ أيلول</span></span>
+        </div>
+      </div>
+      <p class="hint">تُحذف المحادثات الخاملة بعد ٦ أشهر</p>
+    </div>
+    <nav class="tabs">
+      <a class="tab" href="#s1"><svg class="i"><use href="#i-home"/></svg>الرئيسية</a>
+      <a class="tab on" href="#s8"><svg class="i"><use href="#i-chat"/></svg>دردشاتي<span class="tbadge">12</span></a>
+      <a class="tab fabslot" href="#s5"><span class="fab"><svg class="i lg"><use href="#i-camera"/></svg><span class="pl"><svg class="i" style="width:8px;height:8px"><use href="#i-plus"/></svg></span></span><span style="margin-top:40px">أضف إعلان</span></a>
+      <a class="tab" href="#s10"><svg class="i"><use href="#i-ads"/></svg>إعلاناتي</a>
+      <a class="tab" href="#s11"><svg class="i"><use href="#i-user"/></svg>حسابي</a>
+    </nav>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 09 THREAD ============ -->
+<figure id="s9">
+  <figcaption>
+    <span class="fn">09</span>
+    <span class="ft">المحادثة</span>
+    <span class="fd">بطاقة الإعلان مثبّتة أعلى المحادثة حتى لا ينسى أي من الطرفين موضوع الكلام.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٩</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab" style="padding-bottom:10px">
+        <div class="acts"><span class="ic"><svg class="i"><use href="#i-phone"/></svg></span><span class="ic"><svg class="i"><use href="#i-dots"/></svg></span></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="text-align:right">
+            <div style="font-weight:600;font-size:15px;display:flex;align-items:center;gap:5px">أبو مصطفى <svg class="i xs" style="color:var(--blue)"><use href="#i-verified"/></svg></div>
+            <div style="font-size:11px;color:var(--green);font-weight:600">متصل الآن</div>
+          </div>
+          <span style="width:36px;height:36px;border-radius:50%;background:#DDE1E8;color:#9AA2AE;display:grid;place-items:center"><svg class="i sm"><use href="#i-userf"/></svg></span>
+          <svg class="i" style="color:var(--ink)"><use href="#i-arrowr"/></svg>
+        </div>
+      </div>
+      <div class="ctxcard">
+        <span class="ct"><svg class="i sm"><use href="#i-car"/></svg></span>
+        <div style="flex:1">
+          <div class="cn">كيا سول ٢٠١٨ · وارد أمريكي</div>
+          <div class="cp">١٢٬٩٠٥٬٠٠٠ د.ع</div>
+        </div>
+        <svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg>
+      </div>
+
+      <div class="thread">
+        <div class="daysep">اليوم</div>
+        <div class="bub them">السلام عليكم، السيارة متوفرة؟<div class="tm">٠٩:٤٨</div></div>
+        <div class="bub me">وعليكم السلام، إي متوفرة<div class="tm">٠٩:٥٢</div></div>
+        <div class="bub them">آخر سعر شكد؟ وهل بيها صبغ؟<div class="tm">٠٩:٥٣</div></div>
+        <div class="bub me">صبغ وكالة عدا الرفرف الأيمن. السعر ١٢ مليون و٦٠٠ آخر شي<div class="tm">١٠:٠١</div></div>
+        <div class="bub them">زين، أقدر أشوفها باچر الصبح؟<div class="tm">١٠:١٤</div></div>
+      </div>
+
+      <div style="padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="opt">إي، تفضل</span>
+        <span class="opt">أي وقت يناسبك؟</span>
+        <span class="opt">موقعي بالكرادة</span>
+      </div>
+
+      <div style="padding:0 16px 16px">
+        <div class="tip">
+          <span class="ic"><svg class="i sm"><use href="#i-bulb"/></svg></span>
+          <span>لا ترسل أي مبلغ مقدماً ولا تشارك رمز التحقق مع أحد. سوقنا لا يطلب منك ذلك أبداً.</span>
+        </div>
+      </div>
+    </div>
+    <div class="composer">
+      <svg class="i" style="color:var(--mut)"><use href="#i-camera"/></svg>
+      <span class="fld">اكتب رسالة…</span>
+      <span class="send"><svg class="i sm"><use href="#i-send"/></svg></span>
+    </div>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 10 MY ADS ============ -->
+<figure id="s10">
+  <figcaption>
+    <span class="fn">10</span>
+    <span class="ft">إعلاناتي</span>
+    <span class="fd">بطاقات الأرقام في الأعلى، ثم المسودات والمفضلة والبحوث المحفوظة.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٥</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab">
+        <div class="acts">
+          <span class="ic"><svg class="i"><use href="#i-phone"/></svg></span>
+          <span class="ic"><svg class="i"><use href="#i-bell"/></svg><span class="badge">8</span></span>
+        </div>
+        <span class="ttl">إعلاناتي</span>
+      </div>
+
+      <div style="height:14px"></div>
+      <div class="tiles">
+        <div class="tile"><div class="tv"><span class="ic"><svg class="i"><use href="#i-ads"/></svg></span>1</div><div class="tl">الإعلانات</div></div>
+        <div class="tile"><div class="tv"><span class="ic"><svg class="i"><use href="#i-eye"/></svg></span>21</div><div class="tl">المشاهدات</div></div>
+        <div class="tile or"><div class="tv"><span class="ic"><svg class="i"><use href="#i-camera"/></svg></span></div><div class="tl">أضف إعلانك الآن</div></div>
+        <div class="tile star"><div class="tv"><span class="ic"><svg class="i"><use href="#i-star"/></svg></span>0</div><div class="tl">التقييم</div></div>
+      </div>
+
+      <div class="rows">
+        <div class="row"><span>المسودات</span><span class="rr"><b>0</b><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+        <div class="row"><span>الإعلانات المفضّلة</span><span class="rr"><b>4</b><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+        <div class="row"><span>البحوث المفضّلة</span><span class="rr"><b>2</b><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+        <div class="row"><span>آخر الإعلانات المشاهدة</span><span class="rr"><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+        <div class="row"><span>آخر البحوث</span><span class="rr"><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+        <div class="row"><span>إعلانات المتابَعين</span><span class="rr"><svg class="i sm"><use href="#i-chevl"/></svg></span></div>
+      </div>
+
+      <div class="shead" style="padding-top:6px"><h3>إعلاناتي الفعّالة</h3></div>
+      <div class="box" style="padding:11px;display:flex;gap:12px;align-items:center">
+        <span style="width:62px;height:62px;border-radius:11px;background:linear-gradient(155deg,hsl(96 30% 88%),hsl(96 26% 76%));color:hsl(96 34% 40%);display:grid;place-items:center;flex:none"><svg class="i lg"><use href="#i-car"/></svg></span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:600;line-height:1.4">كيا سول ٢٠١٨ · وارد أمريكي</div>
+          <div style="font-size:13px;color:var(--blue);font-weight:700;margin:3px 0 5px">١٢٬٩٠٥٬٠٠٠ د.ع</div>
+          <div style="display:flex;gap:9px;align-items:center;font-size:11px;color:var(--mut)">
+            <span style="display:flex;align-items:center;gap:3px"><svg class="i xs"><use href="#i-eye"/></svg> ٢١</span>
+            <span style="display:flex;align-items:center;gap:3px"><svg class="i xs"><use href="#i-chat"/></svg> ٣</span>
+            <span style="background:var(--green);color:#fff;border-radius:4px;padding:1.5px 6px;font-weight:600;font-size:10px">منشور</span>
+          </div>
+        </div>
+        <span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>
+      </div>
+      <div style="padding:0 16px 16px"><span class="btn or wide">ميّز إعلانك ليوصل أكثر</span></div>
+    </div>
+    <nav class="tabs">
+      <a class="tab" href="#s1"><svg class="i"><use href="#i-home"/></svg>الرئيسية</a>
+      <a class="tab" href="#s8"><svg class="i"><use href="#i-chat"/></svg>دردشاتي<span class="tbadge">12</span></a>
+      <a class="tab fabslot" href="#s5"><span class="fab"><svg class="i lg"><use href="#i-camera"/></svg><span class="pl"><svg class="i" style="width:8px;height:8px"><use href="#i-plus"/></svg></span></span><span style="margin-top:40px">أضف إعلان</span></a>
+      <a class="tab on" href="#s10"><svg class="i"><use href="#i-ads"/></svg>إعلاناتي</a>
+      <a class="tab" href="#s11"><svg class="i"><use href="#i-user"/></svg>حسابي</a>
+    </nav>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+<!-- ============ 11 ACCOUNT ============ -->
+<figure id="s11">
+  <figcaption>
+    <span class="fn">11</span>
+    <span class="ft">حسابي</span>
+    <span class="fd">شاشة واحدة طويلة: الملف، المشاركة ورمز QR، المحفظة، الإحصائيات، والدعم. مرّر داخلها.</span>
+  </figcaption>
+  <div class="phone">
+    <div class="sb"><span class="t">١٠:٢٤</span><span class="ind"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><span class="pill"></span></span></div>
+    <div class="scr">
+      <div class="ab">
+        <div class="acts">
+          <span class="ic"><svg class="i"><use href="#i-phone"/></svg></span>
+          <span class="ic"><svg class="i"><use href="#i-bell"/></svg><span class="badge">8</span></span>
+          <span class="ic"><svg class="i"><use href="#i-gear"/></svg></span>
+        </div>
+        <span class="ttl">حسابي</span>
+      </div>
+
+      <div style="height:14px"></div>
+      <div class="box">
+        <div class="prof">
+          <div style="flex:1">
+            <h3 class="nm">علي</h3>
+            <div class="meta"><svg class="i xs"><use href="#i-cal"/></svg> عضو منذ ٠٤/٠٩/٢٠٢٦</div>
+            <div class="stars">
+              <svg class="i sm"><use href="#i-star"/></svg><svg class="i sm"><use href="#i-star"/></svg>
+              <svg class="i sm"><use href="#i-star"/></svg><svg class="i sm"><use href="#i-star"/></svg>
+              <svg class="i sm"><use href="#i-star"/></svg><span class="cnt">(٠)</span>
+            </div>
+          </div>
+          <span class="avatar"><svg class="i" style="width:38px;height:38px"><use href="#i-userf"/></svg></span>
+        </div>
+        <div class="pills">
+          <span class="pill2"><span class="ic"><svg class="i xs"><use href="#i-copy"/></svg></span> رقم الحساب: ٨٢٥٦٠٣٤٨</span>
+          <span class="pill2"><span class="ic"><svg class="i xs"><use href="#i-chevl"/></svg></span> العضوية: عضو مجاني</span>
+        </div>
+        <div class="dashbox">
+          <div class="rowsplit"><span style="font-size:13.5px;font-weight:600">حدّ الإعلانات الفعّالة</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">20</span></div>
+          <div class="bar"><i style="width:96%"></i><span class="knob" style="right:96%"></span></div>
+        </div>
+        <div class="btns">
+          <span class="btn">إدارة الحساب</span>
+          <span class="btn">احصل على إعلانات أكثر</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <h4>شارك حسابي وإعلاناتي</h4>
+        <p style="margin:-6px 0 0;font-size:12.5px;color:var(--mut)">شارك على وسائل التواصل الخاصة بك</p>
+        <div class="socials">
+          <span class="soc ms"><svg class="i sm"><use href="#i-msg"/></svg></span>
+          <span class="soc wa"><svg class="i sm"><use href="#i-wa"/></svg></span>
+          <span class="soc ml"><svg class="i sm"><use href="#i-mail"/></svg></span>
+          <span class="soc x"><svg class="i sm"><use href="#i-xcom"/></svg></span>
+          <span class="soc fb"><svg class="i sm"><use href="#i-fb"/></svg></span>
+          <span class="soc mo"><svg class="i sm"><use href="#i-dots"/></svg></span>
+        </div>
+        <div class="qrwrap">
+          <div class="qr" id="qr"></div>
+          <div style="font-family:'Alexandria',sans-serif;font-weight:600;font-size:14px;margin-top:12px">امسح الكود</div>
+          <div style="font-size:11.5px;color:var(--mut);margin-top:3px">افتح صفحتي في سوقنا مباشرة</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h4>المحفظة</h4>
+        <div class="wallet">
+          <div class="amt">٠ دينار</div>
+          <p>يمكنك استخدام هذا المبلغ عند إتمام الدفع</p>
+        </div>
+        <div class="twin">
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>0</div><div class="ml">رصيد الإعلانات</div></div>
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>0</div><div class="ml">رصيد التمييز</div></div>
+        </div>
+        <div class="btns"><span class="btn wide">+ اشحن رصيد</span></div>
+        <p style="margin:11px 0 0;font-size:11px;color:var(--mut);text-align:center">تُفعَّل المحفظة في تحديث لاحق</p>
+      </div>
+
+      <div class="box">
+        <h4>الإحصائيات</h4>
+        <div class="twin">
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>21</div><div class="ml">مشاهدات الإعلانات</div></div>
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>0</div><div class="ml">مشاهدات الحساب</div></div>
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>0</div><div class="ml">المتابِعون</div></div>
+          <div class="mini"><div class="mv"><span class="arrowb"><svg class="i xs"><use href="#i-chevl"/></svg></span>0</div><div class="ml">المتابَعون</div></div>
+        </div>
+      </div>
+
+      <div class="box" style="display:flex;gap:13px;align-items:center">
+        <span style="width:56px;height:56px;border-radius:13px;background:#FEF1DC;color:#B8710A;display:grid;place-items:center;flex:none"><svg class="i lg"><use href="#i-carrep"/></svg></span>
+        <div style="flex:1">
+          <h4 style="margin:0 0 3px">تقارير المركبات</h4>
+          <p style="margin:0 0 7px;font-size:12px;color:var(--mut)">تحقّق من تاريخ السيارة قبل الشراء</p>
+          <span style="color:var(--blue);font-weight:600;font-size:13px;display:flex;align-items:center;gap:5px">قريباً <svg class="i xs"><use href="#i-chevl"/></svg></span>
+        </div>
+      </div>
+
+      <div class="box">
+        <h4>تحتاج مساعدة؟</h4>
+        <p style="margin:-6px 0 12px;font-size:12.5px;color:var(--mut)">تواصل معنا الآن</p>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <span class="btn ghost" style="display:flex;align-items:center;justify-content:center;gap:8px"><svg class="i sm" style="color:var(--blue)"><use href="#i-phone"/></svg> اتصل بنا</span>
+          <span class="btn ghost" style="display:flex;align-items:center;justify-content:center;gap:8px"><svg class="i sm" style="color:var(--blue)"><use href="#i-user"/></svg> فريق المبيعات</span>
+          <span class="btn ghost" style="display:flex;align-items:center;justify-content:center;gap:8px"><svg class="i sm" style="color:var(--blue)"><use href="#i-plus"/></svg> أضف اقتراح</span>
+        </div>
+      </div>
+
+      <div style="padding:0 16px 18px">
+        <div class="row" style="background:var(--sf);border-radius:12px;border:0;padding:13px 15px">
+          <span style="color:var(--red);font-weight:600;font-size:13.5px">حذف الحساب نهائياً</span>
+          <svg class="i sm" style="color:var(--mut)"><use href="#i-chevl"/></svg>
+        </div>
+        <p style="text-align:center;font-size:10.5px;color:var(--mut);margin:12px 0 0">إلزامي لقبول التطبيق في Google Play</p>
+      </div>
+    </div>
+    <nav class="tabs">
+      <a class="tab" href="#s1"><svg class="i"><use href="#i-home"/></svg>الرئيسية</a>
+      <a class="tab" href="#s8"><svg class="i"><use href="#i-chat"/></svg>دردشاتي<span class="tbadge">12</span></a>
+      <a class="tab fabslot" href="#s5"><span class="fab"><svg class="i lg"><use href="#i-camera"/></svg><span class="pl"><svg class="i" style="width:8px;height:8px"><use href="#i-plus"/></svg></span></span><span style="margin-top:40px">أضف إعلان</span></a>
+      <a class="tab" href="#s10"><svg class="i"><use href="#i-ads"/></svg>إعلاناتي</a>
+      <a class="tab on" href="#s11"><svg class="i"><use href="#i-userf"/></svg>حسابي</a>
+    </nav>
+    <div class="homebar"></div>
+  </div>
+</figure>
+
+</main>
+
+<script>
+(function(){
+  var el = document.getElementById('qr');
+  if(!el) return;
+  var N = 21, seed = 20260906, cells = [];
+  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+  function finder(r,c){
+    for(var i=0;i<3;i++) for(var j=0;j<3;j++){
+      var dr=r+i, dc=c+j;
+      if(dr<0||dc<0||dr>=N||dc>=N) continue;
+    }
+  }
+  for(var r=0;r<N;r++){
+    cells[r]=[];
+    for(var c=0;c<N;c++) cells[r][c] = rnd() > .52 ? 1 : 0;
+  }
+  // three finder squares + quiet zones
+  var corners = [[0,0],[0,N-7],[N-7,0]];
+  corners.forEach(function(p){
+    for(var i=0;i<8;i++) for(var j=0;j<8;j++){
+      var r=p[0]+i, c=p[1]+j;
+      if(r<0||c<0||r>=N||c>=N) continue;
+      if(i===7||j===7){ cells[r][c]=0; continue; }
+      var edge = (i===0||i===6||j===0||j===6);
+      var core = (i>=2&&i<=4&&j>=2&&j<=4);
+      cells[r][c] = (edge||core) ? 1 : 0;
+    }
+  });
+  // timing lines
+  for(var k=8;k<N-8;k++){ cells[6][k] = k%2===0?1:0; cells[k][6] = k%2===0?1:0; }
+  var frag = document.createDocumentFragment();
+  for(var r2=0;r2<N;r2++) for(var c2=0;c2<N;c2++){
+    var i2 = document.createElement('i');
+    if(cells[r2][c2]) i2.className='on';
+    frag.appendChild(i2);
+  }
+  el.appendChild(frag);
+})();
+</script>

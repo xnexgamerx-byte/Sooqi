@@ -1,0 +1,19 @@
+{
+  "name": "souqna",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.33.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "pnpm --filter @souqna/server run dev",
+    "build": "pnpm run typecheck",
+    "typecheck": "tsc --build",
+    "db:generate": "pnpm --filter @souqna/db run generate",
+    "db:push": "pnpm --filter @souqna/db run push",
+    "db:seed": "pnpm --filter @souqna/db run seed"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}

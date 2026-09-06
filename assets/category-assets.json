@@ -1,0 +1,197 @@
+{
+  "source": {
+    "figmaFile": "QwZRpQ5PXHIj2RCHkWLNYw",
+    "url": "https://www.figma.com/design/QwZRpQ5PXHIj2RCHkWLNYw/?node-id=1-13613",
+    "section": "1:13613",
+    "note": "صور أقسام مستخرجة من نسخة الويب لصفحة الأقسام. الصورة الأصلية 70×63 بكسل تقريباً؛ صدّرها @3x لشاشات الموبايل."
+  },
+  "export": {
+    "format": "png",
+    "scale": 3,
+    "targetDir": "assets/categories/"
+  },
+  "categories": [
+    {
+      "slug": "stores",
+      "nameAr": "متاجر",
+      "imageNodeId": "1:13628",
+      "cardNodeId": "1:13623",
+      "file": "stores@3x.png"
+    },
+    {
+      "slug": "cars",
+      "nameAr": "سيارات ومركبات",
+      "imageNodeId": "1:13634",
+      "cardNodeId": "1:13629",
+      "file": "cars@3x.png"
+    },
+    {
+      "slug": "motorcycles",
+      "nameAr": "دراجات نارية",
+      "imageNodeId": "1:13640",
+      "cardNodeId": "1:13635",
+      "file": "motorcycles@3x.png"
+    },
+    {
+      "slug": "real-estate-sale",
+      "nameAr": "عقارات للبيع",
+      "imageNodeId": "1:13646",
+      "cardNodeId": "1:13641",
+      "file": "real-estate-sale@3x.png"
+    },
+    {
+      "slug": "real-estate-rent",
+      "nameAr": "عقارات للإيجار",
+      "imageNodeId": "1:13652",
+      "cardNodeId": "1:13647",
+      "file": "real-estate-rent@3x.png"
+    },
+    {
+      "slug": "home-garden",
+      "nameAr": "منزل وحديقة",
+      "imageNodeId": "1:13658",
+      "cardNodeId": "1:13653",
+      "file": "home-garden@3x.png"
+    },
+    {
+      "slug": "services",
+      "nameAr": "الخدمات",
+      "imageNodeId": "1:13664",
+      "cardNodeId": "1:13659",
+      "file": "services@3x.png"
+    },
+    {
+      "slug": "business-equipment",
+      "nameAr": "تجهيزات ومعدات الشركات",
+      "imageNodeId": "1:13670",
+      "cardNodeId": "1:13665",
+      "file": "business-equipment@3x.png"
+    },
+    {
+      "slug": "mobiles-tablets",
+      "nameAr": "موبايل و تابلت",
+      "imageNodeId": "1:13676",
+      "cardNodeId": "1:13671",
+      "file": "mobiles-tablets@3x.png"
+    },
+    {
+      "slug": "laptops",
+      "nameAr": "لابتوب وكمبيوتر",
+      "imageNodeId": "1:13682",
+      "cardNodeId": "1:13677",
+      "file": "laptops@3x.png"
+    },
+    {
+      "slug": "games",
+      "nameAr": "ألعاب وألعاب الفيديو",
+      "imageNodeId": "1:13688",
+      "cardNodeId": "1:13683",
+      "file": "games@3x.png"
+    },
+    {
+      "slug": "electronics",
+      "nameAr": "الكترونيات",
+      "imageNodeId": "1:13694",
+      "cardNodeId": "1:13689",
+      "file": "electronics@3x.png"
+    },
+    {
+      "slug": "appliances",
+      "nameAr": "أجهزة منزلية",
+      "imageNodeId": "1:13700",
+      "cardNodeId": "1:13695",
+      "file": "appliances@3x.png"
+    },
+    {
+      "slug": "sports-fitness",
+      "nameAr": "معدات رياضية ولياقة",
+      "imageNodeId": "1:13706",
+      "cardNodeId": "1:13701",
+      "file": "sports-fitness@3x.png"
+    },
+    {
+      "slug": "jobs",
+      "nameAr": "وظائف شاغرة",
+      "imageNodeId": "1:13712",
+      "cardNodeId": "1:13707",
+      "file": "jobs@3x.png"
+    },
+    {
+      "slug": "job-seekers",
+      "nameAr": "باحثين عن عمل",
+      "imageNodeId": "1:13718",
+      "cardNodeId": "1:13713",
+      "file": "job-seekers@3x.png"
+    },
+    {
+      "slug": "education",
+      "nameAr": "تدريس وتدريب",
+      "imageNodeId": "1:13724",
+      "cardNodeId": "1:13719",
+      "file": "education@3x.png"
+    },
+    {
+      "slug": "pets",
+      "nameAr": "حيوانات وإكسسوارات",
+      "imageNodeId": "1:13730",
+      "cardNodeId": "1:13725",
+      "file": "pets@3x.png"
+    },
+    {
+      "slug": "fashion-kids",
+      "nameAr": "موضة وأطفال",
+      "imageNodeId": "1:13736",
+      "cardNodeId": "1:13731",
+      "file": "fashion-kids@3x.png"
+    },
+    {
+      "slug": "beauty-health",
+      "nameAr": "جمال وصحة",
+      "imageNodeId": "1:13742",
+      "cardNodeId": "1:13737",
+      "file": "beauty-health@3x.png"
+    },
+    {
+      "slug": "entertainment-books",
+      "nameAr": "ترفيه وكتب ومقتنيات",
+      "imageNodeId": "1:13748",
+      "cardNodeId": "1:13743",
+      "file": "entertainment-books@3x.png"
+    },
+    {
+      "slug": "food",
+      "nameAr": "طعام وغذاء",
+      "imageNodeId": "1:13754",
+      "cardNodeId": "1:13749",
+      "file": "food@3x.png"
+    },
+    {
+      "slug": "all-categories",
+      "nameAr": "جميع الأقسام",
+      "imageNodeId": "1:13760",
+      "cardNodeId": "1:13755",
+      "file": "all-categories@3x.png"
+    },
+    {
+      "slug": "reviews",
+      "nameAr": "التقييمات والمراجعات",
+      "imageNodeId": "1:13766",
+      "cardNodeId": "1:13761",
+      "file": "reviews@3x.png"
+    },
+    {
+      "slug": "sell-now",
+      "nameAr": "بيع الآن",
+      "imageNodeId": "1:13772",
+      "cardNodeId": "1:13767",
+      "file": "sell-now@3x.png"
+    },
+    {
+      "slug": "promo-saved-search",
+      "nameAr": "ابحث عن العناصر المدرجة حديثًا",
+      "imageNodeId": "1:13785",
+      "cardNodeId": "1:13779",
+      "file": "promo-saved-search@3x.png"
+    }
+  ]
+}

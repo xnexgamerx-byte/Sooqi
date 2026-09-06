@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+.turbo/
+coverage/
+# exported Figma assets land here; commit them once licensed
+assets/categories/*.png
+!assets/categories/.gitkeep

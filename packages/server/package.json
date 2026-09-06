@@ -1,0 +1,25 @@
+{
+  "name": "@souqna/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc --build",
+    "typecheck": "tsc --build"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@souqna/db": "workspace:*",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
+    "fastify": "^5.6.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3"
+  }
+}

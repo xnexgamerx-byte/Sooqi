@@ -1,0 +1,768 @@
+<title>خطة إطلاق سوقنا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F4F6FB; --surface:#FFFFFF; --surface-2:#EBF0F8;
+    --ink:#0D1320; --ink-2:#38455C; --muted:#69758D;
+    --line:#DBE2EF; --line-2:#C4CEE0;
+    --accent:#0F53D9; --accent-soft:#E3ECFF;
+    --amber:#9C610A; --amber-soft:#FAEDD8;
+    --green:#0A6B4A; --green-soft:#DAF1E7;
+    --red:#A02A22; --red-soft:#FBE5E2;
+    --shadow:0 1px 2px rgba(13,19,32,.05), 0 8px 24px -14px rgba(13,19,32,.22);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0A0E16; --surface:#121926; --surface-2:#1A2231;
+      --ink:#E9EEF8; --ink-2:#B4C0D3; --muted:#8492AA;
+      --line:#222C3D; --line-2:#313D53;
+      --accent:#6EA2FF; --accent-soft:#152340;
+      --amber:#E0A44C; --amber-soft:#2A2213;
+      --green:#4CC79A; --green-soft:#0F2820;
+      --red:#F0847B; --red-soft:#2C1613;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0A0E16; --surface:#121926; --surface-2:#1A2231;
+    --ink:#E9EEF8; --ink-2:#B4C0D3; --muted:#8492AA;
+    --line:#222C3D; --line-2:#313D53;
+    --accent:#6EA2FF; --accent-soft:#152340;
+    --amber:#E0A44C; --amber-soft:#2A2213;
+    --green:#4CC79A; --green-soft:#0F2820;
+    --red:#F0847B; --red-soft:#2C1613;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px -16px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    direction:rtl; text-align:right;
+    background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;
+    font-size:16px; line-height:1.75; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:0 22px 96px}
+  .col{max-width:720px}
+
+  /* ---------- masthead ---------- */
+  .mast{padding:56px 0 30px; border-bottom:2px solid var(--ink); margin-bottom:0}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 14px;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--line-2); min-width:24px}
+  h1{
+    font-family:"Alexandria",sans-serif; font-weight:700;
+    font-size:clamp(38px,7vw,60px); line-height:1.1; letter-spacing:-.01em;
+    margin:0 0 16px; text-wrap:balance;
+  }
+  .lede{font-size:19px; line-height:1.65; color:var(--ink-2); max-width:60ch; margin:0 0 26px}
+  .mast-meta{
+    display:flex; flex-wrap:wrap; gap:8px 10px; font-family:"IBM Plex Mono",monospace;
+    font-size:12px; color:var(--muted); padding-bottom:4px;
+  }
+  .mast-meta span{
+    background:var(--surface-2); border:1px solid var(--line);
+    padding:4px 10px; border-radius:4px; white-space:nowrap;
+  }
+
+  /* ---------- figures ---------- */
+  .figures{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    border-bottom:1px solid var(--line); margin-bottom:52px;
+  }
+  .fig{padding:24px 20px 26px; border-inline-start:1px solid var(--line)}
+  .fig:last-child{border-inline-start:0}
+  .fig b{
+    display:block; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+    font-size:clamp(28px,4.6vw,40px); font-weight:600; line-height:1.05;
+    letter-spacing:-.02em; color:var(--ink);
+  }
+  .fig b em{font-style:normal; font-size:.5em; color:var(--muted); font-weight:500}
+  .fig span{display:block; font-size:13px; color:var(--muted); margin-top:8px; line-height:1.5}
+  @media (max-width:640px){
+    .figures{grid-template-columns:1fr}
+    .fig{border-inline-start:0; border-bottom:1px solid var(--line)}
+    .fig:last-child{border-bottom:0}
+  }
+
+  /* ---------- sections ---------- */
+  section{margin:0 0 60px; scroll-margin-top:20px}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin:0 0 8px}
+  .sec-num{
+    font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+    color:var(--accent); flex:none; padding-top:4px;
+  }
+  h2{
+    font-family:"Alexandria",sans-serif; font-weight:600;
+    font-size:clamp(24px,3.6vw,31px); line-height:1.25; margin:0; letter-spacing:-.005em;
+    text-wrap:balance;
+  }
+  h3{
+    font-family:"Alexandria",sans-serif; font-weight:600; font-size:17px;
+    margin:34px 0 10px; color:var(--ink);
+  }
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px; max-width:62ch}
+  p{margin:0 0 15px; max-width:64ch}
+  a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:3px}
+  strong{font-weight:600; color:var(--ink)}
+  em.q{font-style:normal; background:var(--accent-soft); color:var(--accent);
+       padding:1px 6px; border-radius:4px; font-weight:600; font-size:.94em}
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto; margin:20px 0 8px; border:1px solid var(--line);
+      border-radius:10px; background:var(--surface); box-shadow:var(--shadow)}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:14.5px}
+  th,td{padding:11px 14px; text-align:right; border-bottom:1px solid var(--line); vertical-align:top}
+  thead th{
+    background:var(--surface-2); font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:0}
+  tfoot td{
+    background:var(--surface-2); font-weight:600; border-top:2px solid var(--line-2); border-bottom:0;
+  }
+  td.n, th.n{
+    font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+    white-space:nowrap; font-weight:500;
+  }
+  td.note{color:var(--muted); font-size:13.5px; line-height:1.55}
+  caption{
+    caption-side:bottom; text-align:right; font-size:12.5px; color:var(--muted);
+    padding:10px 14px; line-height:1.6; border-top:1px solid var(--line);
+  }
+
+  /* ---------- chips ---------- */
+  .chip{
+    display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:11px;
+    font-weight:600; padding:2px 8px; border-radius:20px; white-space:nowrap;
+    letter-spacing:.02em;
+  }
+  .chip.in{background:var(--green-soft); color:var(--green)}
+  .chip.out{background:var(--red-soft); color:var(--red)}
+  .chip.later{background:var(--amber-soft); color:var(--amber)}
+  .chip.free{background:var(--green-soft); color:var(--green)}
+
+  /* ---------- lists ---------- */
+  ul.clean{list-style:none; padding:0; margin:14px 0}
+  ul.clean li{
+    padding:11px 0 11px 0; border-bottom:1px solid var(--line);
+    display:flex; gap:12px; align-items:flex-start; max-width:66ch;
+  }
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li .k{
+    flex:none; width:150px; font-weight:600; font-size:14.5px; color:var(--ink);
+  }
+  ul.clean li .v{color:var(--ink-2); font-size:14.5px; line-height:1.65}
+  @media (max-width:560px){
+    ul.clean li{flex-direction:column; gap:3px}
+    ul.clean li .k{width:auto}
+  }
+  ol.steps{padding:0; margin:16px 0; list-style:none; counter-reset:s}
+  ol.steps li{
+    counter-increment:s; position:relative; padding:0 34px 16px 0;
+    border-inline-start:1px solid var(--line); margin-inline-start:11px;
+    max-width:64ch;
+  }
+  ol.steps li::before{
+    content:counter(s); position:absolute; right:-11px; top:0;
+    width:22px; height:22px; border-radius:50%; background:var(--accent);
+    color:#fff; font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    display:grid; place-items:center;
+  }
+  ol.steps li:last-child{border-inline-start-color:transparent}
+  ol.steps li b{display:block; font-size:15.5px; margin-bottom:2px}
+  ol.steps li span{color:var(--ink-2); font-size:14.5px}
+
+  /* ---------- architecture ---------- */
+  .arch{display:flex; flex-direction:column; gap:0; margin:24px 0 10px; max-width:720px}
+  .tier{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; box-shadow:var(--shadow);
+  }
+  .tier .tl{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:10px;
+  }
+  .tier .row{display:flex; flex-wrap:wrap; gap:7px}
+  .node{
+    background:var(--surface-2); border:1px solid var(--line);
+    border-radius:7px; padding:6px 11px; font-size:13.5px; font-weight:500; color:var(--ink);
+  }
+  .node.hi{background:var(--accent-soft); border-color:transparent; color:var(--accent); font-weight:600}
+  .link{
+    display:flex; align-items:center; gap:9px; padding:7px 0 7px 0;
+    margin-inline-start:22px; color:var(--muted); font-size:12.5px;
+    font-family:"IBM Plex Mono",monospace;
+  }
+  .link::before{content:""; width:1px; height:22px; background:var(--line-2); flex:none}
+
+  /* ---------- callout ---------- */
+  .call{
+    border-inline-start:3px solid var(--accent); background:var(--surface);
+    border-radius:0 10px 10px 0; padding:16px 18px; margin:24px 0; max-width:66ch;
+    box-shadow:var(--shadow);
+  }
+  .call.warn{border-inline-start-color:var(--amber)}
+  .call.stop{border-inline-start-color:var(--red)}
+  .call .ct{
+    font-family:"Alexandria",sans-serif; font-weight:600; font-size:15px;
+    margin:0 0 6px; display:block;
+  }
+  .call p{margin:0; font-size:14.5px; color:var(--ink-2); max-width:none}
+  .call p + p{margin-top:9px}
+
+  /* ---------- rec ---------- */
+  .rec{
+    display:grid; gap:1px; background:var(--line); border:1px solid var(--line);
+    border-radius:10px; overflow:hidden; margin:22px 0; grid-template-columns:repeat(3,1fr);
+  }
+  .rec > div{background:var(--surface); padding:16px 16px 18px}
+  .rec .rl{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:9px;
+  }
+  .rec .rv{font-family:"Alexandria",sans-serif; font-weight:600; font-size:16px; margin-bottom:5px}
+  .rec .rn{font-size:13px; color:var(--muted); line-height:1.55}
+  @media (max-width:660px){.rec{grid-template-columns:1fr}}
+
+  footer{
+    margin-top:70px; padding-top:22px; border-top:1px solid var(--line);
+    color:var(--muted); font-size:13px; max-width:66ch;
+  }
+  footer p{max-width:none; font-size:13px}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">خطة منتج · النسخة الأولى · أيلول ٢٠٢٦</p>
+    <h1>سوقنا</h1>
+    <p class="lede">
+      تطبيق إعلانات مبوّبة للسوق العراقي: سيارات، عقارات، موبايلات، وكل ما يُباع ويُشترى.
+      هذه الخطة تغطي ما نبنيه، بأي ترتيب، على أي خوادم، وبكم: من أول سطر كود حتى أول ألف مستخدم.
+    </p>
+    <div class="mast-meta">
+      <span>السوق: العراق</span>
+      <span>المنصة: أندرويد أولاً</span>
+      <span>الاسم مقترح وقابل للتغيير</span>
+      <span>1 دولار ≈ 1,400 د.ع</span>
+    </div>
+  </header>
+
+  <div class="figures">
+    <div class="fig">
+      <b>0<em> دولار</em></b>
+      <span>كلفة التشغيل الشهرية حتى أول ١٬٠٠٠ مستخدم، على الطبقات المجانية</span>
+    </div>
+    <div class="fig">
+      <b>70<em> دولاراً</em></b>
+      <span>كلفة الشهر بعد الإطلاق عند ٢٠ ألف مستخدم ونحو ٥٬٠٠٠ إعلان</span>
+    </div>
+    <div class="fig">
+      <b>12<em> أسبوع</em></b>
+      <span>من مستودع فارغ إلى تطبيق منشور على Google Play</span>
+    </div>
+  </div>
+
+  <div class="col">
+
+  <!-- ================= 1 ================= -->
+  <section id="s1">
+    <div class="sec-head"><span class="sec-num">01</span><h2>القرار الأول: ما الذي لن نبنيه</h2></div>
+    <p class="sub">التطبيق الذي أرسلت صوره فيه سبعة تطبيقات داخل تطبيق واحد. بناؤها كلها دفعة واحدة هو أضمن طريقة لعدم إطلاق أي شيء.</p>
+
+    <p>
+      النسخة الأولى تفعل ثلاثة أشياء فقط: <strong>ينشر المستخدم إعلاناً، يتصفّح الآخرون الإعلانات، ويتواصلون مع البائع.</strong>
+      كل ما عدا ذلك يؤجَّل. هذا ليس تقليلاً للطموح، بل ترتيباً له.
+    </p>
+
+    <div class="tw">
+      <table>
+        <thead>
+          <tr><th>الميزة</th><th style="width:90px">القرار</th><th>السبب</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>تسجيل ودخول</td><td><span class="chip in">النسخة ١</span></td><td class="note">بدونه لا يوجد بائع ولا محادثة</td></tr>
+          <tr><td>إضافة إعلان بصور</td><td><span class="chip in">النسخة ١</span></td><td class="note">قلب التطبيق كله</td></tr>
+          <tr><td>الأقسام والتصفح</td><td><span class="chip in">النسخة ١</span></td><td class="note">شبكة الأقسام والقوائم في الصور</td></tr>
+          <tr><td>بحث وفلاتر</td><td><span class="chip in">النسخة ١</span></td><td class="note">سعر، مدينة، حالة، قسم</td></tr>
+          <tr><td>صفحة تفاصيل الإعلان</td><td><span class="chip in">النسخة ١</span></td><td class="note">غير موجودة في صورك لكنها الشاشة الأهم</td></tr>
+          <tr><td>اتصال وواتساب ودردشة</td><td><span class="chip in">النسخة ١</span></td><td class="note">الصفقة تُغلق هنا</td></tr>
+          <tr><td>المفضلة</td><td><span class="chip in">النسخة ١</span></td><td class="note">رخيصة البناء وترفع العودة للتطبيق</td></tr>
+          <tr><td>البلاغات ولوحة الإشراف</td><td><span class="chip in">النسخة ١</span></td><td class="note">Google Play يرفض بدونها، والاحتيال يبدأ من اليوم الأول</td></tr>
+          <tr><td>المحفظة والدفع والرصيد</td><td><span class="chip later">لاحقاً</span></td><td class="note">لا معنى لها ما دام كل شيء مجاناً</td></tr>
+          <tr><td>الستوري والفيديو</td><td><span class="chip later">لاحقاً</span></td><td class="note">تخزين وبثّ فيديو = أغلى بند في الفاتورة</td></tr>
+          <tr><td>الوظائف والسيرة الذاتية</td><td><span class="chip out">تطبيق آخر</span></td><td class="note">منتج مستقل بمستخدمين مختلفين</td></tr>
+          <tr><td>المتاجر وحسابات التجار</td><td><span class="chip later">لاحقاً</span></td><td class="note">يأتي مع أول اشتراك مدفوع</td></tr>
+          <tr><td>تقارير المركبات (كارفاكس)</td><td><span class="chip later">لاحقاً</span></td><td class="note">يحتاج عقداً مع مزوّد بيانات</td></tr>
+          <tr><td>التقييمات والمتابَعة</td><td><span class="chip later">لاحقاً</span></td><td class="note">بلا مستخدمين لا يوجد ما يُقيَّم</td></tr>
+        </tbody>
+        <caption>«لاحقاً» تعني أن الجداول موجودة في قاعدة البيانات من اليوم الأول لكن الشاشات مخفية. «تطبيق آخر» تعني لا تفكر فيها هذه السنة.</caption>
+      </table>
+    </div>
+
+    <div class="call warn">
+      <span class="ct">ابدأ بقسمين، لا بعشرين</span>
+      <p>
+        أطلق بـ<strong>السيارات والموبايلات</strong> فقط، وفي <strong>بغداد</strong> فقط. الشبكة في الشاشة الأولى تعرض بقية الأقسام
+        وهي «قريباً». سوق فيه عشرون قسماً وثلاثة إعلانات في كل قسم يبدو مهجوراً؛ سوق فيه قسمان وستمئة إعلان يبدو حيّاً.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 2 ================= -->
+  <section id="s2">
+    <div class="sec-head"><span class="sec-num">02</span><h2>البنية التقنية</h2></div>
+    <p class="sub">اختيارات مملّة ومجرَّبة. كل قطعة هنا يمكن استبدالها لاحقاً دون إعادة كتابة الباقي.</p>
+
+    <div class="arch">
+      <div class="tier">
+        <div class="tl">التطبيق</div>
+        <div class="row">
+          <span class="node hi">React&nbsp;Native · Expo</span>
+          <span class="node">Expo Router</span>
+          <span class="node">React Query</span>
+          <span class="node">أندرويد + iOS بكود واحد</span>
+        </div>
+      </div>
+      <div class="link">الصور مباشرة من الحافة · بقية الطلبات إلى الـAPI</div>
+      <div class="tier">
+        <div class="tl">الحافة</div>
+        <div class="row">
+          <span class="node hi">Cloudflare R2</span>
+          <span class="node">تخزين الصور</span>
+          <span class="node">تسليم مجاني بلا رسوم خروج</span>
+        </div>
+      </div>
+      <div class="link">HTTPS + WebSocket</div>
+      <div class="tier">
+        <div class="tl">الخادم</div>
+        <div class="row">
+          <span class="node hi">Node.js 22 · Fastify</span>
+          <span class="node">TypeScript</span>
+          <span class="node">Socket.IO للدردشة</span>
+          <span class="node">Zod للتحقق</span>
+        </div>
+      </div>
+      <div class="link">استعلامات · طابور · تخزين مؤقت</div>
+      <div class="tier">
+        <div class="tl">البيانات</div>
+        <div class="row">
+          <span class="node hi">PostgreSQL · Drizzle ORM</span>
+          <span class="node">بحث نصي مدمج</span>
+          <span class="node">Redis لاحقاً</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>لماذا هذه الاختيارات</h3>
+    <ul class="clean">
+      <li><span class="k">Expo وليس أندرويد أصلي</span><span class="v">كود واحد لنظامي التشغيل، وتحديثات فورية للتطبيق دون انتظار مراجعة المتجر. المقايضة: أداء أقل قليلاً في الشاشات الثقيلة، وهو غير محسوس في تطبيق قوائم.</span></li>
+      <li><span class="k">PostgreSQL وليس MongoDB</span><span class="v">الإعلانات علاقية بطبيعتها: مستخدم ← إعلان ← قسم ← مدينة ← صور. والبحث النصي والفلاتر السعرية أسهل بكثير هنا.</span></li>
+      <li><span class="k">بحث Postgres وليس Elasticsearch</span><span class="v">‏<code>pg_trgm</code> مع فهرس نصي يكفي تماماً حتى ٥٠ ألف إعلان. أضف Meilisearch حين يبطؤ البحث فعلاً، لا قبل ذلك.</span></li>
+      <li><span class="k">R2 وليس S3</span><span class="v">رسوم الخروج صفر. في تطبيق صور، الخروج هو الفاتورة كلها — وهذا الفرق وحده يوفّر مئات الدولارات شهرياً عند النمو.</span></li>
+      <li><span class="k">الدردشة على نفس الخادم</span><span class="v">لا تبنِ خدمة دردشة منفصلة قبل أن تحتاجها. Socket.IO داخل نفس عملية الـAPI يكفي لآلاف الاتصالات المتزامنة.</span></li>
+    </ul>
+
+    <div class="call stop">
+      <span class="ct">لا تلمس AWS ولا Google Cloud في البداية</span>
+      <p>
+        فاتورتهما غير متوقعة ويصعب تقديرها قبل أن تصلك. تطبيق بهذا الحجم يعمل على خادم بأربعة دولارات شهرياً.
+        انتقل إليهما حين يكون لديك دخل يبرّر التعقيد، لا قبل.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 3 ================= -->
+  <section id="s3">
+    <div class="sec-head"><span class="sec-num">03</span><h2>قاعدة البيانات</h2></div>
+    <p class="sub">أربعة عشر جدولاً تكفي للنسخة الأولى. الجداول المؤجَّلة موجودة من البداية وفارغة، حتى لا تُهاجر البيانات لاحقاً.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:170px">الجدول</th><th>الحقول المهمة</th><th style="width:80px">النسخة</th></tr></thead>
+        <tbody>
+          <tr><td class="n">users</td><td class="note">الاسم، الهاتف، تاريخ التسجيل، الصورة، محقَّق؟، محظور؟، رقم الحساب الظاهر</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">cities</td><td class="note">المحافظة، المنطقة — قائمة ثابتة تُزرع مرة واحدة</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">categories</td><td class="note">الاسم، الأب، الأيقونة، الترتيب، مفعّل؟ — شجرة بثلاثة مستويات</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">category_fields</td><td class="note">الحقول الخاصة بكل قسم: الماركة والموديل والسنة للسيارات، الغرف والمساحة للعقار</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">listings</td><td class="note">العنوان، الوصف، السعر، العملة، الحالة، القسم، المدينة، الناشر، الحالة الإدارية، تاريخ الانتهاء</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">listing_images</td><td class="note">المفتاح في R2، الترتيب، الأبعاد — الصورة الأولى هي الغلاف</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">listing_attributes</td><td class="note">قيم الحقول الديناميكية لكل إعلان</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">favorites</td><td class="note">مستخدم ← إعلان</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">listing_views</td><td class="note">عدّاد المشاهدات — يُجمَّع دورياً لا عند كل فتح</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">conversations</td><td class="note">المشتري، البائع، الإعلان، آخر رسالة</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">messages</td><td class="note">النص، المرسل، مقروءة؟، الوقت</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">reports</td><td class="note">المُبلِّغ، الهدف، السبب، حالة المعالجة</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">blocks</td><td class="note">حظر مستخدم لمستخدم</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">saved_searches</td><td class="note">شروط البحث + إشعار عند إعلان جديد مطابق</td><td><span class="chip in">١</span></td></tr>
+          <tr><td class="n">wallets · boosts</td><td class="note">الرصيد وتمييز الإعلانات — تُنشأ فارغة وتُفعَّل في النسخة ٢</td><td><span class="chip later">٢</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="call">
+      <span class="ct">قرار يوفّر عليك إعادة كتابة لاحقاً</span>
+      <p>
+        اجعل <em class="q">listings.status</em> حقلاً مفصّلاً من الآن: مسودة، بانتظار المراجعة، منشور، مرفوض، منتهٍ، مباع، محذوف.
+        كل تطبيق سوق يصل إلى هذه الحالات السبع؛ إضافتها لاحقاً تعني لمس كل استعلام في المشروع.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 4 ================= -->
+  <section id="s4">
+    <div class="sec-head"><span class="sec-num">04</span><h2>الشاشات</h2></div>
+    <p class="sub">أربع عشرة شاشة، مصمَّمة كلها ومعروضة في نموذج تفاعلي منفصل بنفس ترتيب الصور التي أرسلتها.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:44px" class="n">#</th><th>الشاشة</th><th>ما فيها</th></tr></thead>
+        <tbody>
+          <tr><td class="n">١</td><td>الرئيسية</td><td class="note">شريط البحث بعلم البلد، دائرة القصص، بانر ترويجي، شبكة الأقسام</td></tr>
+          <tr><td class="n">٢</td><td>كل الأقسام</td><td class="note">بقية الشبكة مع «جميع الأقسام» و«بيع الآن»</td></tr>
+          <tr><td class="n">٣</td><td>الرائجة الآن</td><td class="note">شرائح الأقسام، وشبكة ثلاثية بشارة سعر وقلب</td></tr>
+          <tr><td class="n">٤</td><td>قوائم القسم</td><td class="note">سيارات ومركبات، موبايل وتابلت</td></tr>
+          <tr><td class="n">٥</td><td>تفاصيل الإعلان</td><td class="note">معرض الصور، السعر، المواصفات، بطاقة البائع، شريط الاتصال والدردشة</td></tr>
+          <tr><td class="n">٦</td><td>البحث والفلاتر</td><td class="note">السعر، المدينة، الحالة، الحقول الخاصة بالقسم</td></tr>
+          <tr><td class="n">٧</td><td>اختيار قسم الإعلان</td><td class="note">أربع بطاقات كبيرة + «الأقسام الاخرى»</td></tr>
+          <tr><td class="n">٨</td><td>القسم الفرعي</td><td class="note">قائمة بحث داخل الأقسام</td></tr>
+          <tr><td class="n">٩</td><td>نموذج الإعلان</td><td class="note">الصور، العنوان، السعر، الحالة، المدينة، الحقول الديناميكية</td></tr>
+          <tr><td class="n">١٠</td><td>دردشاتي</td><td class="note">شرائح التصفية والمحادثات</td></tr>
+          <tr><td class="n">١١</td><td>المحادثة</td><td class="note">الرسائل مع بطاقة الإعلان في الأعلى</td></tr>
+          <tr><td class="n">١٢</td><td>إعلاناتي</td><td class="note">بطاقات الأرقام، المسودات، المفضلة، آخر المشاهدات</td></tr>
+          <tr><td class="n">١٣</td><td>حسابي</td><td class="note">بطاقة الملف، حدّ الإعلانات، المشاركة ورمز QR</td></tr>
+          <tr><td class="n">١٤</td><td>الإحصائيات والدعم</td><td class="note">المشاهدات والمتابعون وقنوات التواصل</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 5 ================= -->
+  <section id="s5">
+    <div class="sec-head"><span class="sec-num">05</span><h2>خارطة الطريق</h2></div>
+    <p class="sub">اثنا عشر أسبوعاً بمطوّر واحد متفرّغ. مع مطوّرَين تصبح سبعة إلى ثمانية أسابيع، لأن التصميم والإشراف لا يتوازيان جيداً.</p>
+
+    <ol class="steps">
+      <li>
+        <b>الأسبوعان ١–٢ · الأساس</b>
+        <span>إعداد المشروع، مخطط قاعدة البيانات كاملاً، التسجيل والدخول، رفع الصور وضغطها على الجهاز قبل الإرسال، وزرع الأقسام والمدن.</span>
+      </li>
+      <li>
+        <b>الأسبوعان ٣–٤ · الإعلانات</b>
+        <span>إنشاء وتعديل وحذف الإعلان، الحقول الديناميكية لكل قسم، حالات الإعلان السبع، حدّ الإعلانات الفعّالة لكل مستخدم.</span>
+      </li>
+      <li>
+        <b>الأسبوعان ٥–٦ · التصفح</b>
+        <span>الرئيسية، شبكة الأقسام، قوائم القسم، البحث والفلاتر، صفحة التفاصيل، المفضلة. هنا يبدأ التطبيق يبدو تطبيقاً.</span>
+      </li>
+      <li>
+        <b>الأسبوعان ٧–٨ · التواصل</b>
+        <span>الدردشة الحيّة، زر الاتصال والواتساب، الإشعارات، عمليات البحث المحفوظة مع تنبيه عند إعلان جديد مطابق.</span>
+      </li>
+      <li>
+        <b>الأسبوع ٩ · الإشراف</b>
+        <span>البلاغات، الحظر، لوحة أدمن على الويب، مراجعة الإعلانات قبل النشر، كلمات محظورة. لا تؤجّل هذا الأسبوع.</span>
+      </li>
+      <li>
+        <b>الأسبوع ١٠ · التلميع</b>
+        <span>الأداء، الحالات الفارغة، رسائل الخطأ، الوضع دون اتصال، حذف الحساب من داخل التطبيق — وهو شرط إلزامي في Google Play.</span>
+      </li>
+      <li>
+        <b>الأسبوع ١١ · بيتا مغلقة</b>
+        <span>خمسون إلى مئة مستخدم حقيقي عبر قناة اختبار مغلقة. املأ التطبيق بالإعلانات في هذا الأسبوع، لا بعد الإطلاق.</span>
+      </li>
+      <li>
+        <b>الأسبوع ١٢ · النشر</b>
+        <span>سياسة الخصوصية وشروط الاستخدام، تصنيف المحتوى، إقرار أمان البيانات، صفحة المتجر بلقطات عربية، ثم الإصدار.</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= 6 ================= -->
+  <section id="s6">
+    <div class="sec-head"><span class="sec-num">06</span><h2>التكاليف</h2></div>
+    <p class="sub">ثلاثة سيناريوهات. الأرقام بالدولار شهرياً ما لم يُذكر غير ذلك، وهي أسعار قوائم علنية في أيلول ٢٠٢٦.</p>
+
+    <h3>أ · التطوير والبيتا — حتى ١٬٠٠٠ مستخدم</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>البند</th><th>الخدمة</th><th class="n" style="width:88px">الشهر</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td>قاعدة البيانات</td><td>Supabase Free</td><td class="n">0.00</td><td class="note">٥٠٠ ميغابايت، تتوقف بعد أسبوع خمول — أيقظها بمهمة دورية</td></tr>
+          <tr><td>خادم الـAPI</td><td>Fly.io / Render Free</td><td class="n">0.00</td><td class="note">ينام عند عدم الاستخدام، أول طلب يتأخر ثوانٍ</td></tr>
+          <tr><td>تخزين الصور</td><td>Cloudflare R2</td><td class="n">0.00</td><td class="note">أول ١٠ غيغابايت مجاناً، والخروج مجاني دائماً</td></tr>
+          <tr><td>الإشعارات</td><td>Expo Push</td><td class="n">0.00</td><td class="note">مجاني بلا سقف عملي</td></tr>
+          <tr><td>تحقّق الهاتف</td><td>—</td><td class="n">0.00</td><td class="note">في البيتا فعّل الحسابات يدوياً وتجنّب رسوم الرسائل</td></tr>
+          <tr><td>النطاق</td><td>‎.com سنوياً</td><td class="n">~1.00</td><td class="note">‏١٢ دولاراً في السنة</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">المجموع الشهري</td><td class="n">~1.00</td><td class="note">إضافة إلى ٢٥ دولاراً مرة واحدة لحساب Google Play</td></tr></tfoot>
+      </table>
+    </div>
+
+    <h3>ب · بعد الإطلاق — ٢٠ ألف مستخدم و٥٬٠٠٠ إعلان</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>البند</th><th>الخدمة</th><th class="n" style="width:88px">الشهر</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td>خادم الـAPI</td><td>Hetzner — ٢ نواة، ٤ غيغا رام</td><td class="n">~4.50</td><td class="note">نحو ٤ يورو؛ عدّلت Hetzner أسعارها في حزيران ٢٠٢٦ فتأكد عند الشراء</td></tr>
+          <tr><td>قاعدة البيانات</td><td>Supabase Pro</td><td class="n">25.00</td><td class="note">‏٨ غيغا قاعدة، ١٠٠ غيغا تخزين، و١٠ دولارات رصيد حوسبة</td></tr>
+          <tr><td>تخزين الصور</td><td>R2 — نحو ٥٠ غيغا</td><td class="n">~0.75</td><td class="note">‏٠٫٠١٥ دولار للغيغا شهرياً، والتسليم بلا رسوم</td></tr>
+          <tr><td>النسخ الاحتياطي</td><td>مساحة تخزين + مهمة يومية</td><td class="n">~3.00</td><td class="note">لا تعتمد على نسخ المزوّد وحدها</td></tr>
+          <tr><td>المراقبة والأخطاء</td><td>Sentry / Better Stack</td><td class="n">0.00</td><td class="note">الطبقة المجانية تكفي في هذا الحجم</td></tr>
+          <tr><td>رسائل التحقق</td><td>بوابة رسائل</td><td class="n">30 – 90</td><td class="note">أكبر بند وأكثره تقلّباً — اقرأ التحذير أدناه</td></tr>
+          <tr><td>النطاق</td><td>‎.com</td><td class="n">~1.00</td><td class="note">—</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">المجموع الشهري</td><td class="n">64 – 124</td><td class="note">نحو ٩٠ ألف إلى ١٧٥ ألف دينار</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="call warn">
+      <span class="ct">رسائل التحقق هي فخّ الفاتورة</span>
+      <p>
+        الرسالة القصيرة إلى العراق عبر مزوّد عالمي تكلّف عادة بين خمسة وتسعة سنتات. عشرون ألف مستخدم × رسالتين = فاتورة أكبر من كل بقية البنود مجتمعة.
+      </p>
+      <p>
+        <strong>الحل:</strong> اجعل الدخول بحساب Google مجاناً وبلا رسائل، ولا تطلب تحقّق الهاتف إلا <strong>عند نشر أول إعلان</strong>.
+        هذا يقلّص عدد الرسائل عشرة أضعاف لأن معظم المستخدمين متصفّحون لا ناشرون. واطلب عرض سعر من بوابة رسائل عراقية محلية — فرقها عن المزوّدين العالميين كبير.
+      </p>
+    </div>
+
+    <h3>ج · النمو — ١٠٠ ألف مستخدم و٥٠ ألف إعلان</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>البند</th><th>الخدمة</th><th class="n" style="width:88px">الشهر</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td>خوادم الـAPI</td><td>خادمان — ٤ نوى، ٨ غيغا</td><td class="n">~15.00</td><td class="note">مع موزّع أحمال</td></tr>
+          <tr><td>قاعدة البيانات</td><td>Postgres مُدار أكبر</td><td class="n">60 – 110</td><td class="note">أو خادم مخصص مُدار ذاتياً بنصف الكلفة وضعف الجهد</td></tr>
+          <tr><td>Redis</td><td>خادم صغير</td><td class="n">~4.50</td><td class="note">تخزين مؤقت وطوابير</td></tr>
+          <tr><td>محرك البحث</td><td>Meilisearch على خادم صغير</td><td class="n">~7.00</td><td class="note">حين يتجاوز البحث النصي المدمج قدرته</td></tr>
+          <tr><td>تخزين الصور</td><td>R2 — نحو ٥٠٠ غيغا</td><td class="n">~7.50</td><td class="note">التسليم ما زال بلا رسوم</td></tr>
+          <tr><td>شبكة توصيل بديلة</td><td>Bunny.net إن لزم</td><td class="n">0 – 60</td><td class="note">نحو ٠٫٠٦ دولار للغيغا في الشرق الأوسط؛ لن تحتاجها مع R2</td></tr>
+          <tr><td>رسائل التحقق</td><td>بوابة رسائل</td><td class="n">80 – 200</td><td class="note">بعد تطبيق التحقّق عند النشر فقط</td></tr>
+          <tr><td>المراقبة</td><td>خطة مدفوعة</td><td class="n">~26.00</td><td class="note">تنبيهات وتتبّع أخطاء</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">المجموع الشهري</td><td class="n">200 – 430</td><td class="note">عند هذا الحجم يجب أن يكون التطبيق قد بدأ يدرّ دخلاً</td></tr></tfoot>
+      </table>
+    </div>
+
+    <h3>تكاليف لمرة واحدة أو سنوية</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>البند</th><th class="n" style="width:110px">الكلفة</th><th>متى</th></tr></thead>
+        <tbody>
+          <tr><td>حساب Google Play للمطوّرين</td><td class="n">25 $ مرة واحدة</td><td class="note">قبل النشر بأسبوعين — الحساب الجديد يحتاج فترة تحقق</td></tr>
+          <tr><td>حساب Apple للمطوّرين</td><td class="n">99 $ سنوياً</td><td class="note">أجّله حتى تقرر إصدار iOS</td></tr>
+          <tr><td>النطاق</td><td class="n">~12 $ سنوياً</td><td class="note">الآن</td></tr>
+          <tr><td>الهوية البصرية والأيقونة</td><td class="n">0 – 150 $</td><td class="note">قبل صفحة المتجر</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 7 ================= -->
+  <section id="s7">
+    <div class="sec-head"><span class="sec-num">07</span><h2>الاستضافة</h2></div>
+    <p class="sub">لا يوجد مركز بيانات كبير داخل العراق. الخيار الحقيقي هو بين أوروبا القريبة والخليج، والفارق في زمن الاستجابة أصغر بكثير مما يُظن.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>المزوّد</th><th>الأنسب لـ</th><th class="n" style="width:96px">السعر</th><th>الحكم</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Hetzner</strong></td><td class="note">خادم الـAPI</td><td class="n">من ~4 €</td>
+            <td class="note">أفضل سعر مقابل أداء في السوق. ألمانيا وفنلندا، نحو ٩٠–١٣٠ ميلي ثانية من بغداد — غير محسوس في تطبيق قوائم. <strong>التوصية.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Supabase</strong></td><td class="note">قاعدة البيانات والتخزين والدخول</td><td class="n">0 ثم 25 $</td>
+            <td class="note">يوفّر عليك أسبوعين من العمل: Postgres مُدار، وتسجيل دخول جاهز، ونسخ احتياطي. ابدأ به.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloudflare R2</strong></td><td class="note">الصور</td><td class="n">0.015 $/غيغا</td>
+            <td class="note">رسوم الخروج صفر. في تطبيق صور هذا هو الفارق بين فاتورة بعشرة دولارات وأخرى بمئتين. <strong>التوصية.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Fly.io</strong></td><td class="note">بديل للخادم</td><td class="n">طبقة مجانية</td>
+            <td class="note">ينشر قرب المستخدم ويتعامل مع WebSocket جيداً. أغلى من Hetzner عند النمو.</td>
+          </tr>
+          <tr>
+            <td><strong>Railway / Render</strong></td><td class="note">سرعة النشر</td><td class="n">5 – 20 $</td>
+            <td class="note">أسهل نشر على الإطلاق، ومناسب للتطوير. الكلفة تتضاعف بسرعة مع الحِمل.</td>
+          </tr>
+          <tr>
+            <td><strong>DigitalOcean</strong></td><td class="note">بديل وسط</td><td class="n">من 6 $</td>
+            <td class="note">توثيق ممتاز وواجهة مريحة. أغلى من Hetzner بنحو الضعف لنفس المواصفات.</td>
+          </tr>
+          <tr>
+            <td><strong>Bunny.net</strong></td><td class="note">شبكة توصيل</td><td class="n">~0.06 $/غيغا</td>
+            <td class="note">تسليم ممتاز في الشرق الأوسط بحد أدنى دولار شهرياً. لا تحتاجه ما دمت على R2.</td>
+          </tr>
+          <tr>
+            <td><strong>AWS / Google Cloud</strong></td><td class="note">لاحقاً جداً</td><td class="n">متغيّر</td>
+            <td class="note">منطقتا الإمارات والبحرين قريبتان فعلاً، لكن الفاتورة غير متوقعة والتعقيد لا يخدمك الآن. <strong>تجنّبهما.</strong></td>
+          </tr>
+        </tbody>
+        <caption>الأسعار من صفحات المزوّدين العلنية في أيلول ٢٠٢٦ وقابلة للتغيير. تحقق منها قبل الشراء.</caption>
+      </table>
+    </div>
+
+    <div class="rec">
+      <div>
+        <div class="rl">اليوم</div>
+        <div class="rv">Supabase Free + Fly.io</div>
+        <div class="rn">صفر دولار. ابنِ وأطلق البيتا على هذه.</div>
+      </div>
+      <div>
+        <div class="rl">عند الإطلاق</div>
+        <div class="rv">Hetzner + Supabase Pro + R2</div>
+        <div class="rn">نحو ٣٠ دولاراً للبنية، والباقي رسائل تحقق.</div>
+      </div>
+      <div>
+        <div class="rl">عند النمو</div>
+        <div class="rv">خادمان + Postgres مُدار + Redis</div>
+        <div class="rn">انقل قاعدة البيانات فقط حين يصبح الاستعلام بطيئاً.</div>
+      </div>
+    </div>
+
+    <div class="call">
+      <span class="ct">ما يهم فعلاً في السرعة</span>
+      <p>
+        زمن استجابة الخادم ليس ما يشعر به المستخدم؛ ما يشعر به هو <strong>سرعة ظهور الصور</strong>.
+        اضغط الصورة على الجهاز قبل رفعها، وولّد ثلاثة أحجام لكل صورة، وقدّمها من الحافة. افعل ذلك، ولن يهم أين يقع خادمك.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 8 ================= -->
+  <section id="s8">
+    <div class="sec-head"><span class="sec-num">08</span><h2>الدخل — لاحقاً</h2></div>
+    <p class="sub">التطبيق مجاني بالكامل في النسخة الأولى. هذا قرار صحيح: لا أحد يدفع في سوق فارغ. لكن ابنِ الأساس من الآن.</p>
+
+    <ul class="clean">
+      <li><span class="k">تمييز الإعلان</span><span class="v">أكبر مصدر دخل في هذا النموذج بفارق كبير. رفع الإعلان إلى الأعلى، أو شارة مميّزة، أو تثبيت في نتائج القسم — بسعر صغير لأيام معدودة.</span></li>
+      <li><span class="k">باقات التجار</span><span class="v">معرض السيارات ومحل الموبايلات يريدان عدد إعلانات أكبر، وصفحة متجر، وإحصائيات. اشتراك شهري ثابت.</span></li>
+      <li><span class="k">بانرات</span><span class="v">المساحة الترويجية في الرئيسية وأعلى نتائج القسم. تُباع محلياً وليس عبر شبكات إعلانية.</span></li>
+      <li><span class="k">خدمات مرتبطة</span><span class="v">فحص السيارة، التمويل، التوصيل — بعمولة إحالة لا ببناء الخدمة.</span></li>
+    </ul>
+
+    <div class="call warn">
+      <span class="ct">لا تضع إعلانات شبكات في تطبيق سوق</span>
+      <p>
+        إعلانات الشبكات تدرّ دولارات قليلة وتُفقد التطبيق مصداقيته وتدفع المستخدم للخروج. مساحتك الإعلانية أثمن مباعة مباشرة لتاجر محلي.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 9 ================= -->
+  <section id="s9">
+    <div class="sec-head"><span class="sec-num">09</span><h2>الترويج والإطلاق</h2></div>
+    <p class="sub">هنا تموت معظم تطبيقات الأسواق. المشكلة ليست تقنية: لا مشترين بلا بائعين، ولا بائعين بلا مشترين.</p>
+
+    <p>
+      الحل الوحيد المُجرَّب هو <strong>كسر الحلقة يدوياً</strong>: املأ التطبيق بنفسك قبل أن يراه أحد.
+      لا تطلق تطبيقاً فارغاً وتنتظر أن يمتلئ.
+    </p>
+
+    <ol class="steps">
+      <li>
+        <b>قبل الإطلاق بشهر · املأ السوق</b>
+        <span>اتفق مع ١٥–٢٥ معرض سيارات ومحل موبايلات في بغداد: تمييز مجاني لمدة ستة أشهر مقابل نشر مخزونهم اليوم. الهدف ٥٠٠–١٬٠٠٠ إعلان حقيقي قبل يوم الإطلاق.</span>
+      </li>
+      <li>
+        <b>قبل الإطلاق بأسبوعين · صفحة المتجر</b>
+        <span>الاسم في المتجر يجب أن يحوي الكلمات التي يبحث بها الناس: «سوق»، «بيع وشراء»، «سيارات»، «العراق». لقطات عربية تعرض إعلانات حقيقية لا شاشات فارغة. هذه أرخص قناة تسويق لديك وأكثرها استدامة.</span>
+      </li>
+      <li>
+        <b>الإطلاق · تيك توك أولاً</b>
+        <span>أقوى قناة في العراق بفارق واضح. فيديوهات قصيرة عن صفقات حقيقية في التطبيق: «سيارة انباعت بيوم واحد». التعاون مع صنّاع محتوى محليين متوسطي الحجم أرخص وأفعل من الإعلانات المدفوعة.</span>
+      </li>
+      <li>
+        <b>الإطلاق · تلغرام وفيسبوك</b>
+        <span>مجموعات البيع والشراء الموجودة أصلاً هي مستخدموك المستقبليون. لا تنشر روابط عشوائية؛ انشر إعلانات حقيقية من تطبيقك تفيد أعضاء المجموعة.</span>
+      </li>
+      <li>
+        <b>بعد الإطلاق · الإحالة</b>
+        <span>كود دعوة يمنح الطرفين تمييز إعلان مجانياً. أرخص بكثير من الإعلانات المدفوعة، ويجلب مستخدمين ناشرين لا متفرّجين.</span>
+      </li>
+      <li>
+        <b>لا تصرف على إعلانات مدفوعة قبل هذا الرقم</b>
+        <span>حتى تصل نسبة العائدين بعد سبعة أيام إلى ١٥٪ فأكثر، كل دينار على الإعلانات مهدور. قبل ذلك المشكلة في المنتج لا في الوصول.</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= 10 ================= -->
+  <section id="s10">
+    <div class="sec-head"><span class="sec-num">10</span><h2>المخاطر</h2></div>
+    <p class="sub">أربعة أشياء تُسقط هذا النوع من التطبيقات. لكلٍّ منها إجراء محدد.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:190px">الخطر</th><th>الإجراء</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>الاحتيال والإعلانات الوهمية</strong></td>
+            <td class="note">مراجعة يدوية لكل إعلان في أول ثلاثين يوماً. زر بلاغ في كل إعلان. حظر بالجهاز لا بالحساب فقط. رسالة تحذير ثابتة داخل المحادثة: لا تدفع مقدماً.</td>
+          </tr>
+          <tr>
+            <td><strong>رفض Google Play</strong></td>
+            <td class="note">سياسة خصوصية منشورة على نطاقك، وحذف الحساب من داخل التطبيق، وإقرار أمان البيانات، وتصنيف محتوى صحيح. أنشئ الحساب مبكراً — التحقق يستغرق أياماً.</td>
+          </tr>
+          <tr>
+            <td><strong>انفجار فاتورة الرسائل</strong></td>
+            <td class="note">تحقّق الهاتف عند النشر فقط، وسقف يومي للرسائل لكل رقم وكل عنوان شبكة، وتنبيه عند تجاوز حد محدد.</td>
+          </tr>
+          <tr>
+            <td><strong>تسريب أرقام الهواتف</strong></td>
+            <td class="note">لا يظهر الرقم في نص الصفحة إطلاقاً، بل يُجلب بضغطة على زر الاتصال، ويُسجَّل من طلبه ومتى. هذا يمنع كشط الأرقام بالجملة.</td>
+          </tr>
+          <tr>
+            <td><strong>سوق فارغ عند الإطلاق</strong></td>
+            <td class="note">القسم التاسع كله عن هذا. لا تطلق قبل ٥٠٠ إعلان.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 11 ================= -->
+  <section id="s11">
+    <div class="sec-head"><span class="sec-num">11</span><h2>ما تحتاج فتحه الآن</h2></div>
+    <p class="sub">قائمة الحسابات، بترتيب الحاجة إليها. المجموع حتى الإطلاق: نحو ٤٠ دولاراً.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>الحساب</th><th class="n" style="width:96px">الكلفة</th><th>متى</th></tr></thead>
+        <tbody>
+          <tr><td>مستودع Git خاص بالتطبيق</td><td class="n"><span class="chip free">مجاني</span></td><td class="note">اليوم — منفصل تماماً عن مشاريعك الأخرى</td></tr>
+          <tr><td>Supabase</td><td class="n"><span class="chip free">مجاني</span></td><td class="note">اليوم</td></tr>
+          <tr><td>Cloudflare (للنطاق و R2)</td><td class="n"><span class="chip free">مجاني</span></td><td class="note">اليوم</td></tr>
+          <tr><td>Expo</td><td class="n"><span class="chip free">مجاني</span></td><td class="note">اليوم</td></tr>
+          <tr><td>نطاق ‎.com</td><td class="n">~12 $ /سنة</td><td class="note">اليوم — تحتاجه لسياسة الخصوصية</td></tr>
+          <tr><td>Google Play Console</td><td class="n">25 $ مرة</td><td class="note">الأسبوع العاشر</td></tr>
+          <tr><td>Hetzner</td><td class="n">~4 € /شهر</td><td class="note">الأسبوع الحادي عشر</td></tr>
+          <tr><td>بوابة رسائل عراقية</td><td class="n">حسب العرض</td><td class="note">الأسبوع الحادي عشر — اطلب العرض مبكراً</td></tr>
+          <tr><td>Apple Developer</td><td class="n">99 $ /سنة</td><td class="note">مؤجَّل حتى تقرر إصدار iOS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      الأسعار مأخوذة من صفحات المزوّدين العلنية في أيلول ٢٠٢٦ وهي عرضة للتغيير — تحقق منها قبل الشراء.
+      التقديرات الزمنية تفترض مطوّراً واحداً متفرّغاً ملمّاً بـReact Native و Node.js.
+      اسم «سوقنا» مقترح عملي فقط؛ تحقق من توفّره في Google Play وكاسم نطاق قبل اعتماده.
+    </p>
+  </footer>
+
+  </div>
+</div>
