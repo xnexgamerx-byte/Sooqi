@@ -8,7 +8,7 @@ import { and, eq, gt, isNull } from "drizzle-orm";
 import { sessions, users } from "@souqna/db";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { AppContext } from "./context.js";
-import { unauthorized } from "./errors.js";
+import { forbidden, unauthorized } from "./errors.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -164,6 +164,31 @@ export function requireUserId(request: FastifyRequest): string {
   const id = request.souqUserId;
   if (!id) throw unauthorized();
   return id;
+}
+
+/**
+ * يتحقق أن الطالب مشرف أو مدير.
+ *
+ * الدور يُقرأ من القاعدة في كل نداء لا من الجلسة: سحب صلاحية مشرف يجب أن
+ * يسري فوراً، لا عند انتهاء جلسته بعد تسعين يوماً.
+ */
+export async function requireModerator(
+  ctx: AppContext,
+  request: FastifyRequest,
+): Promise<{ userId: string; role: "moderator" | "admin" }> {
+  const userId = requireUserId(request);
+
+  const [row] = await ctx.db
+    .select({ role: users.role })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  if (!row || (row.role !== "moderator" && row.role !== "admin")) {
+    throw forbidden("هذا الإجراء للمشرفين فقط", "not_moderator");
+  }
+
+  return { userId, role: row.role };
 }
 
 /**

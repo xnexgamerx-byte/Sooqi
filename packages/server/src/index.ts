@@ -6,7 +6,9 @@ import { env } from "./env.js";
 import { HttpError } from "./errors.js";
 import { registerAuth } from "./auth.js";
 import { registerAuthRoutes } from "./routes/auth.js";
+import { registerAdminRoutes } from "./routes/admin.js";
 import { registerCategoryRoutes } from "./routes/categories.js";
+import { registerEngagementRoutes } from "./routes/engagement.js";
 import { registerCityRoutes } from "./routes/cities.js";
 import { registerListingRoutes } from "./routes/listings.js";
 import { registerUploadRoutes } from "./routes/uploads.js";
@@ -95,6 +97,8 @@ await app.register(
     registerCityRoutes(instance, context);
     registerListingRoutes(instance, context);
     registerUploadRoutes(instance, context);
+    registerEngagementRoutes(instance, context);
+    registerAdminRoutes(instance, context);
   },
   { prefix: "/api" },
 );

@@ -14,6 +14,7 @@ import {
   categories,
   categoryFields,
   cities,
+  favorites,
   listingAttributes,
   listingImages,
   listingViews,
@@ -23,7 +24,7 @@ import {
 } from "@souqna/db";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { requireUserId, viewerHash } from "../auth.js";
+import { currentUserId, requireUserId, viewerHash } from "../auth.js";
 import { imageUrl, type AppContext } from "../context.js";
 import { badRequest, forbidden, notFound } from "../errors.js";
 import { isOwnKey } from "../storage.js";
@@ -155,6 +156,27 @@ async function coverImages(ctx: AppContext, listingIds: string[]) {
   return covers;
 }
 
+/** أي من هذه الإعلانات محفوظ عند هذا المستخدم، باستعلام واحد. */
+async function favoriteSet(
+  ctx: AppContext,
+  userId: string | null,
+  listingIds: string[],
+): Promise<Set<string>> {
+  if (!userId || listingIds.length === 0) return new Set();
+
+  const rows = await ctx.db
+    .select({ listingId: favorites.listingId })
+    .from(favorites)
+    .where(
+      and(
+        eq(favorites.userId, userId),
+        inArray(favorites.listingId, listingIds),
+      ),
+    );
+
+  return new Set(rows.map((row) => row.listingId));
+}
+
 /* ---------------------------------------------------------------- routes */
 
 export function registerListingRoutes(
@@ -207,8 +229,15 @@ export function registerListingRoutes(
 
     if (query.sort === "recent" && query.cursor) {
       const { bumpedAt, id } = decodeCursor(query.cursor);
+      /**
+       * مقارنة صفّية للترقيم بالمؤشر.
+       *
+       * القيم تُمرَّر كنصوص مع صبّ صريح: قالب sql في Drizzle لا يعرف نوع
+       * العمود، فتمرير كائن Date خام يصل إلى برنامج التشغيل كما هو ويفشل
+       * الاستعلام كله.
+       */
       filters.push(
-        sql`(${listings.bumpedAt}, ${listings.id}) < (${bumpedAt}, ${id})`,
+        sql`(${listings.bumpedAt}, ${listings.id}) < (${bumpedAt.toISOString()}::timestamptz, ${id}::uuid)`,
       );
     }
 
@@ -239,10 +268,11 @@ export function registerListingRoutes(
       .limit(query.limit)
       .offset(query.sort === "recent" ? 0 : query.offset);
 
-    const covers = await coverImages(
-      ctx,
-      rows.map((row) => row.id),
-    );
+    const ids = rows.map((row) => row.id);
+    const [covers, saved] = await Promise.all([
+      coverImages(ctx, ids),
+      favoriteSet(ctx, currentUserId(request), ids),
+    ]);
 
     const last = rows.at(-1);
     const nextCursor =
@@ -263,6 +293,7 @@ export function registerListingRoutes(
           categoryNameAr: row.categoryNameAr,
           cityNameAr: row.cityNameAr,
           coverImage: key ? imageUrl(ctx, key) : null,
+          isFavorite: saved.has(row.id),
         };
       }),
       nextCursor,
@@ -310,7 +341,7 @@ export function registerListingRoutes(
       throw notFound("الإعلان غير موجود أو غير منشور", "listing_not_found");
     }
 
-    const [images, attributes] = await Promise.all([
+    const [images, attributes, saved] = await Promise.all([
       ctx.db
         .select({
           id: listingImages.id,
@@ -340,6 +371,7 @@ export function registerListingRoutes(
         )
         .where(eq(listingAttributes.listingId, row.id))
         .orderBy(asc(categoryFields.sortOrder)),
+      favoriteSet(ctx, currentUserId(request), [row.id]),
     ]);
 
     // عدّاد المشاهدات: صف خام + زيادة العدّاد. التجميع الدوري لاحقاً.
@@ -361,6 +393,7 @@ export function registerListingRoutes(
         priceIqd: row.priceIqd,
         condition: row.condition,
         viewCount: row.viewCount + 1,
+        isFavorite: saved.has(row.id),
         publishedAt: row.publishedAt,
         categorySlug: row.categorySlug,
         categoryNameAr: row.categoryNameAr,
