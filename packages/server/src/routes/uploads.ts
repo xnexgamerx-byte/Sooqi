@@ -22,8 +22,9 @@ export function registerUploadRoutes(app: FastifyInstance, ctx: AppContext) {
     requireUserId(request);
 
     if (!uploadsEnabled) {
+      // رسالة يفهمها البائع؛ سببها التقني يُطبع عند الإقلاع لا هنا
       throw badRequest(
-        "رفع الصور غير مفعّل. عبّئ إعدادات R2 في .env",
+        "رفع الصور غير متاح حالياً. حاول لاحقاً.",
         "uploads_disabled",
       );
     }

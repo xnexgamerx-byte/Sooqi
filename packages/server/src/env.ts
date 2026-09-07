@@ -73,6 +73,16 @@ if (r2Present.length === r2Keys.length && !env.R2_PUBLIC_URL) {
   process.exit(1);
 }
 
+/**
+ * غياب R2 ليس خطأً يوقف الإقلاع — الخادم يعمل للتصفّح والدردشة بدونه —
+ * لكنه يعطّل نشر الإعلانات كلها، فلا يُترك بلا تنبيه صريح.
+ */
+if (r2Present.length === 0) {
+  console.warn(
+    "تنبيه: إعدادات R2 فارغة. رفع الصور معطّل، ولا يمكن نشر أي إعلان (النشر يتطلب صورة).",
+  );
+}
+
 if (env.SMS_PROVIDER === "http" && !env.SMS_API_URL) {
   console.error("SMS_API_URL مطلوب مع SMS_PROVIDER=http");
   process.exit(1);

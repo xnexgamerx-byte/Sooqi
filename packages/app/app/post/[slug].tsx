@@ -63,6 +63,20 @@ export default function PostFormScreen() {
 
   const cities = useQuery({ queryKey: ["cities"], queryFn: api.cities });
 
+  /**
+   * هل الرفع مفعّل على هذا الخادم؟
+   *
+   * نسأل قبل فتح المعرض لا بعده: بدون هذا يملأ المستخدم النموذج كلّه،
+   * ينتظر تصغير كل صورة على جهازه، ثم يصطدم بالرفض عند الضغط على «انشر».
+   */
+  const uploads = useQuery({
+    queryKey: ["uploadLimits"],
+    queryFn: api.uploadLimits,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const uploadsOff = uploads.data?.enabled === false;
+
   const submit = useMutation({
     mutationFn: async () => {
       // الصور أولاً: لو فشل الرفع لا نريد إعلاناً بلا صور في القاعدة
@@ -132,6 +146,7 @@ export default function PostFormScreen() {
     fields: fields.data,
     attributes,
     photoCount: photos.length,
+    uploadsOff,
   });
   const canSubmit =
     problems.length === 0 && isSignedIn && !submit.isPending;
@@ -177,6 +192,16 @@ export default function PostFormScreen() {
             label="الصور"
             hint={`${arNumber(photos.length)} من ${arNumber(MAX_PHOTOS)}`}
           >
+            {uploadsOff ? (
+              <View style={styles.uploadsOff}>
+                <Ionicons name="cloud-offline-outline" size={17} color="#7A5410" />
+                <Text style={styles.uploadsOffText}>
+                  رفع الصور غير متاح على الخادم حالياً، والإعلان لا يُنشر بلا
+                  صورة. راجع مسؤول الخادم.
+                </Text>
+              </View>
+            ) : null}
+
             <View style={styles.photos}>
               {photos.map((photo, index) => (
                 <View key={photo.fullUri} style={styles.slotFilled}>
@@ -206,7 +231,7 @@ export default function PostFormScreen() {
                 </View>
               ))}
 
-              {photos.length < MAX_PHOTOS ? (
+              {photos.length < MAX_PHOTOS && !uploadsOff ? (
                 <Pressable
                   style={styles.slot}
                   onPress={() => void addPhotos("library")}
@@ -218,7 +243,7 @@ export default function PostFormScreen() {
               ) : null}
             </View>
 
-            <View style={styles.photoActions}>
+            <View style={[styles.photoActions, uploadsOff && styles.hidden]}>
               <Pressable
                 style={styles.photoAction}
                 onPress={() => void addPhotos("library")}
@@ -415,16 +440,20 @@ function validate({
   fields,
   attributes,
   photoCount,
+  uploadsOff,
 }: {
   title: string;
   citySlug: string | null;
   fields: { key: string; labelAr: string; isRequired: boolean }[] | undefined;
   attributes: Record<string, string>;
   photoCount: number;
+  uploadsOff: boolean;
 }): string[] {
   const problems: string[] = [];
 
-  if (photoCount === 0) problems.push("أضف صورة واحدة على الأقل");
+  // السبب الحقيقي أولاً: «أضف صورة» نصيحة لا تنفع حين لا سبيل لإضافتها
+  if (uploadsOff) problems.push("رفع الصور معطّل على الخادم");
+  else if (photoCount === 0) problems.push("أضف صورة واحدة على الأقل");
   if (title.trim().length < 6) problems.push("العنوان قصير جداً");
   if (!citySlug) problems.push("اختر المدينة");
 
@@ -554,6 +583,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoActions: { flexDirection: "row", gap: space.sm, marginTop: space.sm },
+  hidden: { display: "none" },
+  uploadsOff: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: space.sm,
+    backgroundColor: "#FFF7E8",
+    borderRadius: radius.sm,
+    paddingHorizontal: space.md,
+    paddingVertical: 10,
+    marginBottom: space.sm,
+  },
+  uploadsOffText: { flex: 1, fontSize: 12, color: "#7A5410", lineHeight: 19 },
   photoAction: {
     flex: 1,
     flexDirection: "row",
