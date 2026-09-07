@@ -11,11 +11,26 @@
     "extra": {
       "router": {}
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "يحتاج سوقنا الوصول لصورك حتى تضيفها إلى إعلانك.",
+          "cameraPermission": "يحتاج سوقنا الكاميرا حتى تصوّر ما تريد بيعه."
+        }
+      ]
+    ],
     "android": {
       "package": "iq.souqna.app",
       "edgeToEdgeEnabled": true,
-      "adaptiveIcon": { "backgroundColor": "#0B5FD9" }
+      "adaptiveIcon": {
+        "backgroundColor": "#0B5FD9"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES"
+      ]
     },
     "ios": {
       "bundleIdentifier": "iq.souqna.app",

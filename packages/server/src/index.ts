@@ -6,6 +6,7 @@ import { HttpError } from "./errors.js";
 import { registerCategoryRoutes } from "./routes/categories.js";
 import { registerCityRoutes } from "./routes/cities.js";
 import { registerListingRoutes } from "./routes/listings.js";
+import { registerUploadRoutes } from "./routes/uploads.js";
 import type { AppContext } from "./context.js";
 
 const { db, client } = createDb(env.DATABASE_URL);
@@ -62,6 +63,7 @@ await app.register(
     registerCategoryRoutes(instance, context);
     registerCityRoutes(instance, context);
     registerListingRoutes(instance, context);
+    registerUploadRoutes(instance, context);
   },
   { prefix: "/api" },
 );

@@ -10,6 +10,8 @@
     "typecheck": "tsc --build"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1127.0",
+    "@aws-sdk/s3-request-presigner": "^3.1127.0",
     "@fastify/cors": "^11.1.0",
     "@souqna/db": "workspace:*",
     "dotenv": "^17.2.3",

@@ -26,6 +26,10 @@ import { z } from "zod";
 import { requireUserId, viewerHash } from "../auth.js";
 import { imageUrl, type AppContext } from "../context.js";
 import { badRequest, forbidden, notFound } from "../errors.js";
+import { isOwnKey } from "../storage.js";
+
+/** حدّ الصور لكل إعلان. يطابق ما تعلنه /uploads/limits. */
+const MAX_IMAGES = 12;
 
 /* --------------------------------------------------------------- schemas */
 
@@ -54,8 +58,15 @@ const createBody = z.object({
   contactPhone: z.string().min(8).max(20).optional(),
   attributes: z.record(z.string(), z.string()).optional(),
   images: z
-    .array(z.object({ storageKey: z.string().min(1).max(400) }))
-    .max(12)
+    .array(
+      z.object({
+        storageKey: z.string().min(1).max(400),
+        thumbKey: z.string().min(1).max(400).optional(),
+        width: z.number().int().positive().optional(),
+        height: z.number().int().positive().optional(),
+      }),
+    )
+    .max(MAX_IMAGES)
     .optional(),
 });
 
@@ -126,6 +137,7 @@ async function coverImages(ctx: AppContext, listingIds: string[]) {
     .select({
       listingId: listingImages.listingId,
       storageKey: listingImages.storageKey,
+      thumbKey: listingImages.thumbKey,
       sortOrder: listingImages.sortOrder,
     })
     .from(listingImages)
@@ -134,7 +146,11 @@ async function coverImages(ctx: AppContext, listingIds: string[]) {
 
   const covers = new Map<string, string>();
   for (const row of rows) {
-    if (!covers.has(row.listingId)) covers.set(row.listingId, row.storageKey);
+    // المصغّرة أولاً: الشبكة الثلاثية تعرض ثلاث صور في الصف، وتحميل
+    // الأصل فيها يهدر بيانات المستخدم بلا فائدة بصرية.
+    if (!covers.has(row.listingId)) {
+      covers.set(row.listingId, row.thumbKey ?? row.storageKey);
+    }
   }
   return covers;
 }
@@ -297,7 +313,9 @@ export function registerListingRoutes(
     const [images, attributes] = await Promise.all([
       ctx.db
         .select({
+          id: listingImages.id,
           storageKey: listingImages.storageKey,
+          thumbKey: listingImages.thumbKey,
           width: listingImages.width,
           height: listingImages.height,
         })
@@ -348,8 +366,9 @@ export function registerListingRoutes(
         categoryNameAr: row.categoryNameAr,
         cityNameAr: row.cityNameAr,
         images: images.map((image) => ({
+          id: image.id,
           url: imageUrl(ctx, image.storageKey),
-          storageKey: image.storageKey,
+          thumbUrl: image.thumbKey ? imageUrl(ctx, image.thumbKey) : null,
           width: image.width,
           height: image.height,
         })),
@@ -491,13 +510,7 @@ export function registerListingRoutes(
     if (!created) throw badRequest("تعذّر إنشاء الإعلان", "create_failed");
 
     if (body.images?.length) {
-      await ctx.db.insert(listingImages).values(
-        body.images.map((image, index) => ({
-          listingId: created.id,
-          storageKey: image.storageKey,
-          sortOrder: index,
-        })),
-      );
+      await attachImages(ctx, created.id, body.images, 0);
     }
 
     if (body.attributes) {
@@ -646,6 +659,133 @@ export function registerListingRoutes(
         message: "إعلانك قيد المراجعة وينشر خلال ساعات.",
       };
     },
+  );
+
+  /** يضيف صوراً إلى إعلان قائم، بعد رفعها إلى R2 بالروابط الموقّعة. */
+  app.post<{ Params: { id: string } }>(
+    "/listings/:id/images",
+    async (request, reply) => {
+      const userId = requireUserId(ctx, request);
+      const body = z
+        .object({
+          images: z
+            .array(
+              z.object({
+                storageKey: z.string().min(1).max(400),
+                thumbKey: z.string().min(1).max(400).optional(),
+                width: z.number().int().positive().optional(),
+                height: z.number().int().positive().optional(),
+              }),
+            )
+            .min(1)
+            .max(MAX_IMAGES),
+        })
+        .parse(request.body);
+
+      const listing = await ownedListing(ctx, request.params.id, userId);
+
+      const [existing] = await ctx.db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(listingImages)
+        .where(eq(listingImages.listingId, listing.id));
+
+      const already = existing?.count ?? 0;
+      if (already + body.images.length > MAX_IMAGES) {
+        throw badRequest(
+          `الحد ${MAX_IMAGES} صور للإعلان الواحد`,
+          "too_many_images",
+        );
+      }
+
+      await attachImages(ctx, listing.id, body.images, already);
+
+      return reply.status(201).send({ ok: true, count: body.images.length });
+    },
+  );
+
+  /** يحذف صورة من إعلان. لا يحذف الكائن من R2 — انظر التعليق في attachImages. */
+  app.delete<{ Params: { id: string; imageId: string } }>(
+    "/listings/:id/images/:imageId",
+    async (request) => {
+      const userId = requireUserId(ctx, request);
+      const listing = await ownedListing(ctx, request.params.id, userId);
+
+      const deleted = await ctx.db
+        .delete(listingImages)
+        .where(
+          and(
+            eq(listingImages.id, request.params.imageId),
+            eq(listingImages.listingId, listing.id),
+          ),
+        )
+        .returning({ id: listingImages.id });
+
+      if (deleted.length === 0) {
+        throw notFound("الصورة غير موجودة", "image_not_found");
+      }
+
+      return { ok: true };
+    },
+  );
+}
+
+/** يجلب إعلاناً ويتأكد أن الطالب صاحبه. */
+async function ownedListing(
+  ctx: AppContext,
+  listingId: string,
+  userId: string,
+) {
+  const [listing] = await ctx.db
+    .select({ id: listings.id, userId: listings.userId })
+    .from(listings)
+    .where(eq(listings.id, listingId))
+    .limit(1);
+
+  if (!listing) throw notFound("الإعلان غير موجود", "listing_not_found");
+  if (listing.userId !== userId) throw forbidden();
+
+  return listing;
+}
+
+/**
+ * يربط مفاتيح صور مرفوعة بإعلان.
+ *
+ * المفاتيح تصل من العميل، فنتحقق أنها من الشكل الذي يوقّعه خادمنا. بدون
+ * هذا الفحص يستطيع أي مستخدم ربط إعلانه بأي كائن في الحاوية.
+ *
+ * الحذف هنا يزيل الصف فقط ويترك الكائن في R2. الكائنات اليتيمة تكلّف
+ * ٠٫٠١٥ دولار للغيغابايت شهرياً، أي لا شيء عملياً، ومطاردتها الآن تعقيد
+ * بلا عائد. مهمة مطابقة دورية مدرجة في «ما زال ناقصاً».
+ */
+async function attachImages(
+  ctx: AppContext,
+  listingId: string,
+  images: {
+    storageKey: string;
+    thumbKey?: string;
+    width?: number;
+    height?: number;
+  }[],
+  startOrder: number,
+) {
+  for (const image of images) {
+    if (!isOwnKey(image.storageKey)) {
+      throw badRequest("مفتاح صورة غير صالح", "bad_image_key");
+    }
+    if (image.thumbKey && !isOwnKey(image.thumbKey)) {
+      throw badRequest("مفتاح مصغّرة غير صالح", "bad_image_key");
+    }
+  }
+
+  await ctx.db.insert(listingImages).values(
+    images.map((image, index) => ({
+      listingId,
+      storageKey: image.storageKey,
+      thumbKey: image.thumbKey ?? null,
+      width: image.width ?? null,
+      height: image.height ?? null,
+      sortOrder: startOrder + index,
+    })),
   );
 }
 

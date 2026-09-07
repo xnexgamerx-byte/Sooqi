@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -18,6 +20,16 @@ import { api, ApiError, getDevUserId } from "../../src/api";
 import { ErrorState, Loading } from "../../src/components/StateView";
 import { arNumber } from "../../src/format";
 import { colors, radius, space } from "../../src/theme";
+import {
+  captureImage,
+  pickImages,
+  uploadAll,
+  UploadError,
+  type PreparedImage,
+} from "../../src/upload";
+
+/** يطابق MAX_IMAGES في الخادم و /uploads/limits. */
+const MAX_PHOTOS = 12;
 
 type Condition = "new" | "used" | "imported";
 
@@ -38,6 +50,8 @@ export default function PostFormScreen() {
   const [condition, setCondition] = useState<Condition>("used");
   const [citySlug, setCitySlug] = useState<string | null>(null);
   const [attributes, setAttributes] = useState<Record<string, string>>({});
+  const [photos, setPhotos] = useState<PreparedImage[]>([]);
+  const [uploaded, setUploaded] = useState(0);
 
   const fields = useQuery({
     queryKey: ["fields", slug],
@@ -49,7 +63,11 @@ export default function PostFormScreen() {
 
   const submit = useMutation({
     mutationFn: async () => {
-      const created = await api.createListing({
+      // الصور أولاً: لو فشل الرفع لا نريد إعلاناً بلا صور في القاعدة
+      setUploaded(0);
+      const images = await uploadAll(photos, (done) => setUploaded(done));
+
+      return api.createListing({
         categorySlug: slug,
         citySlug: citySlug ?? "",
         title: title.trim(),
@@ -57,27 +75,62 @@ export default function PostFormScreen() {
         priceIqd: price ? Number(price.replace(/[^0-9]/g, "")) : null,
         condition,
         attributes,
+        images: images.map((image) => ({
+          storageKey: image.storageKey,
+          thumbKey: image.thumbKey || undefined,
+          width: image.width,
+          height: image.height,
+        })),
       });
-      return created;
     },
     onSuccess: (created) => {
       void queryClient.invalidateQueries({ queryKey: ["listings"] });
       void queryClient.invalidateQueries({ queryKey: ["my-listings"] });
       Alert.alert(
         "انحفظ الإعلان",
-        `رقم إعلانك ${arNumber(created.refNo)}. صار مسودة — أضف الصور وانشره من «إعلاناتي».`,
+        `رقم إعلانك ${arNumber(created.refNo)}. صار مسودة — انشره من «إعلاناتي».`,
         [{ text: "تمام", onPress: () => router.dismissAll() }],
       );
     },
     onError: (error) => {
       Alert.alert(
         "تعذّر حفظ الإعلان",
-        error instanceof ApiError ? error.message : "حاول مرة ثانية",
+        error instanceof ApiError || error instanceof UploadError
+          ? error.message
+          : "حاول مرة ثانية",
       );
     },
   });
 
-  const problems = validate({ title, citySlug, fields: fields.data, attributes });
+  const addPhotos = async (source: "library" | "camera") => {
+    const room = MAX_PHOTOS - photos.length;
+    if (room <= 0) return;
+
+    try {
+      if (source === "camera") {
+        const shot = await captureImage();
+        if (shot) setPhotos((previous) => [...previous, shot]);
+        return;
+      }
+      const picked = await pickImages(room);
+      if (picked.length > 0) {
+        setPhotos((previous) => [...previous, ...picked].slice(0, MAX_PHOTOS));
+      }
+    } catch (error) {
+      Alert.alert(
+        "تعذّر إضافة الصورة",
+        error instanceof UploadError ? error.message : "حاول مرة ثانية",
+      );
+    }
+  };
+
+  const problems = validate({
+    title,
+    citySlug,
+    fields: fields.data,
+    attributes,
+    photoCount: photos.length,
+  });
   const canSubmit = problems.length === 0 && !submit.isPending;
 
   if (fields.isPending || cities.isPending) {
@@ -117,6 +170,69 @@ export default function PostFormScreen() {
           contentContainerStyle={styles.form}
           keyboardShouldPersistTaps="handled"
         >
+          <Field
+            label="الصور"
+            hint={`${arNumber(photos.length)} من ${arNumber(MAX_PHOTOS)}`}
+          >
+            <View style={styles.photos}>
+              {photos.map((photo, index) => (
+                <View key={photo.fullUri} style={styles.slotFilled}>
+                  <Image
+                    source={{ uri: photo.previewUri }}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                  />
+                  {index === 0 ? (
+                    <View style={styles.coverTag}>
+                      <Text style={styles.coverText}>الغلاف</Text>
+                    </View>
+                  ) : null}
+                  <Pressable
+                    style={styles.removePhoto}
+                    hitSlop={8}
+                    onPress={() =>
+                      setPhotos((previous) =>
+                        previous.filter((item) => item !== photo),
+                      )
+                    }
+                    accessibilityRole="button"
+                    accessibilityLabel={`احذف الصورة ${arNumber(index + 1)}`}
+                  >
+                    <Ionicons name="close" size={13} color={colors.white} />
+                  </Pressable>
+                </View>
+              ))}
+
+              {photos.length < MAX_PHOTOS ? (
+                <Pressable
+                  style={styles.slot}
+                  onPress={() => void addPhotos("library")}
+                  accessibilityRole="button"
+                  accessibilityLabel="أضف صوراً"
+                >
+                  <Ionicons name="add" size={24} color={colors.muted} />
+                </Pressable>
+              ) : null}
+            </View>
+
+            <View style={styles.photoActions}>
+              <Pressable
+                style={styles.photoAction}
+                onPress={() => void addPhotos("library")}
+              >
+                <Ionicons name="images-outline" size={17} color={colors.blue} />
+                <Text style={styles.photoActionText}>من المعرض</Text>
+              </Pressable>
+              <Pressable
+                style={styles.photoAction}
+                onPress={() => void addPhotos("camera")}
+              >
+                <Ionicons name="camera-outline" size={17} color={colors.blue} />
+                <Text style={styles.photoActionText}>التقط صورة</Text>
+              </Pressable>
+            </View>
+          </Field>
+
           <Field label="عنوان الإعلان" hint={`${title.length}/70`}>
             <TextInput
               style={styles.input}
@@ -266,9 +382,18 @@ export default function PostFormScreen() {
             disabled={!canSubmit}
             accessibilityRole="button"
           >
-            <Text style={styles.submitText}>
-              {submit.isPending ? "جاري الحفظ…" : "احفظ الإعلان"}
-            </Text>
+            {submit.isPending ? (
+              <View style={styles.submitBusy}>
+                <ActivityIndicator color={colors.white} size="small" />
+                <Text style={styles.submitText}>
+                  {uploaded < photos.length
+                    ? `يرفع الصور ${arNumber(uploaded + 1)} من ${arNumber(photos.length)}…`
+                    : "يحفظ الإعلان…"}
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.submitText}>احفظ الإعلان</Text>
+            )}
           </Pressable>
         </View>
       </KeyboardAvoidingView>
@@ -282,14 +407,17 @@ function validate({
   citySlug,
   fields,
   attributes,
+  photoCount,
 }: {
   title: string;
   citySlug: string | null;
   fields: { key: string; labelAr: string; isRequired: boolean }[] | undefined;
   attributes: Record<string, string>;
+  photoCount: number;
 }): string[] {
   const problems: string[] = [];
 
+  if (photoCount === 0) problems.push("أضف صورة واحدة على الأقل");
   if (title.trim().length < 6) problems.push("العنوان قصير جداً");
   if (!citySlug) problems.push("اختر المدينة");
 
@@ -378,6 +506,61 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   textarea: { minHeight: 96 },
+  photos: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  slot: {
+    width: "22.4%",
+    aspectRatio: 1,
+    borderRadius: radius.md,
+    borderWidth: 1.4,
+    borderStyle: "dashed",
+    borderColor: colors.line,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  slotFilled: {
+    width: "22.4%",
+    aspectRatio: 1,
+    borderRadius: radius.md,
+    overflow: "hidden",
+    backgroundColor: colors.surface2,
+  },
+  coverTag: {
+    position: "absolute",
+    bottom: 3,
+    right: 3,
+    left: 3,
+    backgroundColor: "rgba(20,22,28,0.62)",
+    borderRadius: 4,
+    paddingVertical: 2,
+  },
+  coverText: { color: colors.white, fontSize: 8.5, textAlign: "center" },
+  removePhoto: {
+    position: "absolute",
+    top: 3,
+    left: 3,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(20,22,28,0.7)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  photoActions: { flexDirection: "row", gap: space.sm, marginTop: space.sm },
+  photoAction: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.surface,
+  },
+  photoActionText: { color: colors.blue, fontSize: 13, fontWeight: "600" },
+  submitBusy: { flexDirection: "row", alignItems: "center", gap: space.sm },
   segment: { flexDirection: "row", gap: space.sm },
   segmentItem: {
     flex: 1,

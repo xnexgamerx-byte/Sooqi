@@ -64,8 +64,9 @@ export type ListingDetail = {
   categoryNameAr: string;
   cityNameAr: string;
   images: {
+    id: string;
     url: string | null;
-    storageKey: string;
+    thumbUrl: string | null;
     width: number | null;
     height: number | null;
   }[];

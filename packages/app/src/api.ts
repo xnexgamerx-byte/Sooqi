@@ -120,6 +120,25 @@ export const api = {
       (data) => data.listings,
     ),
 
+  /** يوقّع رابطي رفع لصورة واحدة: الكاملة ومصغّرتها. */
+  signUpload: (body: { contentType: string; sizeBytes: number }) =>
+    request<{
+      full: { key: string; uploadUrl: string };
+      thumb: { key: string; uploadUrl: string };
+      expiresIn: number;
+    }>("/api/uploads/sign", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  uploadLimits: () =>
+    request<{
+      enabled: boolean;
+      maxBytes: number;
+      allowedTypes: string[];
+      maxImagesPerListing: number;
+    }>("/api/uploads/limits"),
+
   createListing: (body: {
     categorySlug: string;
     citySlug: string;
@@ -129,6 +148,12 @@ export const api = {
     condition?: "new" | "used" | "imported";
     contactPhone?: string;
     attributes?: Record<string, string>;
+    images?: {
+      storageKey: string;
+      thumbKey?: string;
+      width?: number;
+      height?: number;
+    }[];
   }) =>
     request<{ listing: { id: string; refNo: number } }>("/api/listings", {
       method: "POST",

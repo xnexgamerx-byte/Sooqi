@@ -223,6 +223,13 @@ export const listingImages = pgTable(
       .references(() => listings.id, { onDelete: "cascade" }),
     /** المفتاح داخل حاوية R2، لا رابطاً كاملاً. النطاق يتغير، المفتاح لا. */
     storageKey: text("storage_key").notNull(),
+    /**
+     * نسخة مصغّرة بعرض ٤٠٠ بكسل تستخدمها الشبكة الثلاثية.
+     *
+     * عمود مستقل لا اشتقاق بالاصطلاح من storageKey: لو فشل رفع المصغّرة
+     * وحدها، نريد أن نعرف ذلك ونعرض الأصل، لا أن نبني رابطاً مكسوراً.
+     */
+    thumbKey: text("thumb_key"),
     width: integer("width"),
     height: integer("height"),
     /** الترتيب صفر هو صورة الغلاف. */
