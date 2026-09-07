@@ -1,6 +1,5 @@
-import Constants from "expo-constants";
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { api } from "./api";
 
@@ -11,14 +10,44 @@ import { api } from "./api";
  * و iOS من واجهة واحدة. راجع packages/server/src/push.ts للطرف الآخر.
  */
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+/**
+ * هل نحن داخل تطبيق Expo Go؟
+ *
+ * منذ SDK 53 أُخرجت الإشعارات البعيدة من Expo Go، ومجرّد تحميل الوحدة
+ * expo-notifications هناك يرمي خطأ يوقف التطبيق كلّه قبل أول شاشة.
+ */
+const inExpoGo =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+/**
+ * تُحمَّل الوحدة عند الحاجة لا عند بدء التطبيق.
+ *
+ * الاستيراد الساكن في أعلى الملف يُنفَّذ مع أول شاشة، وأثره الجانبي هو
+ * ما ينهار في Expo Go. الاستيراد الديناميكي يؤجّله إلى ما بعد الفحص.
+ */
+type NotificationsModule = typeof import("expo-notifications");
+
+let modulePromise: Promise<NotificationsModule> | null = null;
+let handlerSet = false;
+
+async function loadNotifications(): Promise<NotificationsModule> {
+  modulePromise ??= import("expo-notifications");
+  const Notifications = await modulePromise;
+
+  if (!handlerSet) {
+    handlerSet = true;
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+  }
+
+  return Notifications;
+}
 
 let registered = false;
 
@@ -33,12 +62,21 @@ export async function registerForPush(): Promise<
 > {
   if (registered) return { ok: true };
 
+  if (inExpoGo) {
+    return {
+      ok: false,
+      reason: "الإشعارات تحتاج نسخة مبنيّة من التطبيق، لا تعمل في Expo Go",
+    };
+  }
+
   // المحاكي لا يصدر رموز إشعارات؛ لا داعي لإزعاج المطوّر بنافذة إذن
   if (!Device.isDevice) {
     return { ok: false, reason: "الإشعارات تعمل على جهاز حقيقي فقط" };
   }
 
   try {
+    const Notifications = await loadNotifications();
+
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync("default", {
         name: "الإشعارات",
