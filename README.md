@@ -28,9 +28,29 @@ cp packages/app/.env.example packages/app/.env
 pnpm app                      # يفتح Expo، امسح الرمز بتطبيق Expo Go
 ```
 
-على جهاز حقيقي، `localhost` يشير إلى الجهاز نفسه لا إلى حاسوبك. اضبط
-`EXPO_PUBLIC_API_URL` على عنوان حاسوبك في الشبكة، مثل
-`http://192.168.1.5:5000`.
+`localhost` داخل التطبيق يعني الهاتف أو المحاكي نفسه لا حاسوبك، فاضبط
+`EXPO_PUBLIC_API_URL` حسب ما تشغّل عليه:
+
+| أين يعمل التطبيق | العنوان |
+| --- | --- |
+| محاكي أندرويد (Android Studio) | `http://10.0.2.2:5000` — عنوان المضيف المحجوز |
+| محاكي iOS | `http://localhost:5000` — يشارك شبكة الحاسوب |
+| هاتف حقيقي على نفس الواي فاي | عنوان حاسوبك، مثل `http://192.168.1.5:5000` |
+| BlueStacks و LDPlayer وأمثالهما | عنوان حاسوبك في الشبكة، لا `10.0.2.2` |
+
+مع هاتف حقيقي على ويندوز، افتح المنفذين في جدار الحماية وإلا انتهت المهلة
+بلا سبب ظاهر — `5000` للخادم و `8081` لأن Expo Go ينزّل منه كود التطبيق:
+
+```powershell
+netsh advfirewall firewall add rule name="Souqna API" dir=in action=allow protocol=TCP localport=5000
+netsh advfirewall firewall add rule name="Expo Metro" dir=in action=allow protocol=TCP localport=8081
+```
+
+اختبر من متصفح الجهاز نفسه قبل أي شيء: افتح `<العنوان>/health`. إن لم يردّ
+`{"ok":true}` فالمشكلة في الشبكة لا في التطبيق، والحل مختلف تماماً.
+
+`EXPO_PUBLIC_*` تُدمج في الحزمة وقت البناء لا وقت التشغيل، فبعد أي تعديل
+على `.env` أعد تشغيل Expo بـ`--clear` وإلا بقي التطبيق على العنوان القديم.
 
 | الأمر | ما يفعله |
 | --- | --- |
