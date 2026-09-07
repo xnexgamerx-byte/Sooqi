@@ -71,6 +71,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="listing/[id]" />
             <Stack.Screen name="browse/[slug]" />
+            <Stack.Screen name="chat/[id]" />
             <Stack.Screen
               name="post/index"
               options={{ presentation: "modal" }}

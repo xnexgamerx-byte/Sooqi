@@ -1,5 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -19,6 +24,7 @@ import {
   ErrorState,
   Loading,
 } from "../../src/components/StateView";
+import { useSession } from "../../src/session";
 import { colors, radius, space } from "../../src/theme";
 
 type Sort = "recent" | "cheap" | "expensive";
@@ -32,6 +38,8 @@ const SORTS: { key: Sort; label: string }[] = [
 export default function BrowseScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { isSignedIn } = useSession();
 
   const [sort, setSort] = useState<Sort>("recent");
   const [city, setCity] = useState<string | undefined>(undefined);
@@ -67,6 +75,14 @@ export default function BrowseScreen() {
       return undefined;
     },
     enabled: Boolean(slug),
+  });
+
+  const favorite = useMutation({
+    mutationFn: ({ id, next }: { id: string; next: boolean }) =>
+      next ? api.addFavorite(id) : api.removeFavorite(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["listings"] });
+    },
   });
 
   const rows = listings.data?.pages.flatMap((page) => page.listings) ?? [];
@@ -178,6 +194,13 @@ export default function BrowseScreen() {
               <ListingCard
                 listing={item}
                 onPress={() => router.push(`/listing/${item.id}`)}
+                onToggleFavorite={() => {
+                  if (!isSignedIn) {
+                    router.push("/login");
+                    return;
+                  }
+                  favorite.mutate({ id: item.id, next: !item.isFavorite });
+                }}
               />
             </View>
           )}

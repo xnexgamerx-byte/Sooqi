@@ -1,5 +1,7 @@
 import type {
   Category,
+  ChatMessage,
+  Conversation,
   CurrentUser,
   CategoryField,
   City,
@@ -120,6 +122,83 @@ export const api = {
     request<{ ok: boolean }>("/api/auth/push-token", {
       method: "POST",
       body: JSON.stringify({ token, platform }),
+    }),
+
+  /* -------------------------------------------------------------- الدردشة */
+
+  conversations: () =>
+    request<{ conversations: Conversation[] }>("/api/conversations").then(
+      (data) => data.conversations,
+    ),
+
+  startConversation: (listingId: string, message?: string) =>
+    request<{ conversationId: string }>("/api/conversations", {
+      method: "POST",
+      body: JSON.stringify({ listingId, message }),
+    }).then((data) => data.conversationId),
+
+  thread: (id: string) =>
+    request<{
+      conversation: {
+        id: string;
+        listing: {
+          id: string;
+          title: string;
+          priceIqd: number | null;
+          status: string;
+        } | null;
+        otherId: string;
+        otherName: string;
+        otherOnline: boolean;
+      };
+      messages: ChatMessage[];
+    }>(`/api/conversations/${id}/messages`),
+
+  sendMessage: (id: string, body: string) =>
+    request<{ message: ChatMessage }>(`/api/conversations/${id}/messages`, {
+      method: "POST",
+      body: JSON.stringify({ body }),
+    }).then((data) => data.message),
+
+  markRead: (id: string) =>
+    request<{ ok: boolean }>(`/api/conversations/${id}/read`, {
+      method: "POST",
+    }),
+
+  blockUser: (id: string) =>
+    request<{ ok: boolean }>(`/api/users/${id}/block`, { method: "POST" }),
+
+  /* ------------------------------------------------------ مفضلة وبلاغات */
+
+  addFavorite: (id: string) =>
+    request<{ isFavorite: boolean }>(`/api/listings/${id}/favorite`, {
+      method: "POST",
+    }),
+
+  removeFavorite: (id: string) =>
+    request<{ isFavorite: boolean }>(`/api/listings/${id}/favorite`, {
+      method: "DELETE",
+    }),
+
+  favorites: () =>
+    request<{ listings: (ListingSummary & { isAvailable: boolean })[] }>(
+      "/api/me/favorites",
+    ).then((data) => data.listings),
+
+  reportReasons: () =>
+    request<{ reasons: { value: string; labelAr: string }[] }>(
+      "/api/reports/reasons",
+    ).then((data) => data.reasons),
+
+  report: (body: {
+    targetType: "listing" | "user" | "message";
+    targetId: string;
+    reason: string;
+    note?: string;
+  }) =>
+    request<{ ok: boolean; alreadyReported: boolean }>("/api/reports", {
+      method: "POST",
+      body: JSON.stringify(body),
     }),
 
   /* ------------------------------------------------------------- المحتوى */

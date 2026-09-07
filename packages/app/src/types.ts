@@ -13,6 +13,31 @@ export type CurrentUser = {
   createdAt: string;
 };
 
+export type Conversation = {
+  id: string;
+  listingId: string;
+  listingTitle: string;
+  listingPrice: number | null;
+  listingImage: string | null;
+  /** "buying" حين أكون المشتري، "selling" حين أكون البائع. */
+  side: "buying" | "selling";
+  otherId: string;
+  otherName: string;
+  otherOnline: boolean;
+  lastMessageText: string | null;
+  lastMessageAt: string | null;
+  unread: number;
+};
+
+export type ChatMessage = {
+  id: string;
+  senderId: string;
+  body: string;
+  readAt?: string | null;
+  createdAt: string;
+  mine: boolean;
+};
+
 export type Category = {
   id: number;
   slug: string;
@@ -49,6 +74,7 @@ export type ListingSummary = {
   categoryNameAr: string;
   cityNameAr: string;
   coverImage: string | null;
+  isFavorite?: boolean;
 };
 
 export type MyListing = {
@@ -72,6 +98,7 @@ export type ListingDetail = {
   priceIqd: number | null;
   condition: string | null;
   viewCount: number;
+  isFavorite: boolean;
   publishedAt: string | null;
   categorySlug: string;
   categoryNameAr: string;

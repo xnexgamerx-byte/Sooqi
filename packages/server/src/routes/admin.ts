@@ -12,6 +12,11 @@ import { z } from "zod";
 import { requireModerator, revokeAllSessions } from "../auth.js";
 import { imageUrl, type AppContext } from "../context.js";
 import { badRequest, forbidden, notFound } from "../errors.js";
+import {
+  notifyApproved,
+  notifyRejected,
+  notifySavedSearches,
+} from "../notify.js";
 import { REPORT_REASON_LABELS } from "./engagement.js";
 
 const pageQuery = z.object({
@@ -138,6 +143,10 @@ export function registerAdminRoutes(app: FastifyInstance, ctx: AppContext) {
         throw notFound("الإعلان غير موجود أو ليس في الطابور", "not_pending");
       }
 
+      // بلا انتظار: المشرف لا ينتظر شبكة Expo ليوافق على الإعلان التالي
+      void notifyApproved(ctx, request.params.id);
+      void notifySavedSearches(ctx, request.params.id);
+
       return { ok: true, status: "published" };
     },
   );
@@ -161,6 +170,8 @@ export function registerAdminRoutes(app: FastifyInstance, ctx: AppContext) {
       if (updated.length === 0) {
         throw notFound("الإعلان غير موجود", "listing_not_found");
       }
+
+      void notifyRejected(ctx, request.params.id, body.reason);
 
       return { ok: true, status: "rejected" };
     },

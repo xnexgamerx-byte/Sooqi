@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { api, setAuthToken } from "./api";
+import { registerForPush, resetPushRegistration } from "./notifications";
 import type { CurrentUser } from "./types";
 
 /**
@@ -71,6 +72,8 @@ export function useSession() {
     async (token: string) => {
       await storeToken(token);
       await queryClient.invalidateQueries();
+      // التسجيل بعد الدخول لا قبله: الرمز يُربط بالحساب على الخادم
+      void registerForPush();
     },
     [queryClient],
   );
@@ -82,8 +85,14 @@ export function useSession() {
       // الرمز قد يكون منتهياً أصلاً؛ ننظّف محلياً في الحالتين
     }
     await storeToken(null);
+    resetPushRegistration();
     queryClient.clear();
   }, [queryClient]);
+
+  // الجلسة المستعادة عند الإقلاع تحتاج تسجيلاً أيضاً؛ الرمز قد يتغيّر
+  useEffect(() => {
+    if (me.data?.user) void registerForPush();
+  }, [me.data?.user]);
 
   const user: CurrentUser | null = me.data?.user ?? null;
 

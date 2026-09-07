@@ -19,6 +19,12 @@
           "photosPermission": "يحتاج سوقنا الوصول لصورك حتى تضيفها إلى إعلانك.",
           "cameraPermission": "يحتاج سوقنا الكاميرا حتى تصوّر ما تريد بيعه."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0B5FD9"
+        }
       ]
     ],
     "android": {
@@ -35,6 +41,9 @@
     "ios": {
       "bundleIdentifier": "iq.souqna.app",
       "supportsTablet": false
+    },
+    "notification": {
+      "iosDisplayInForeground": true
     }
   }
 }

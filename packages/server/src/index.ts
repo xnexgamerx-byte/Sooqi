@@ -1,4 +1,5 @@
 import cors from "@fastify/cors";
+import websocket from "@fastify/websocket";
 import { createDb } from "@souqna/db";
 import Fastify from "fastify";
 import { ZodError } from "zod";
@@ -8,6 +9,7 @@ import { registerAuth } from "./auth.js";
 import { registerAuthRoutes } from "./routes/auth.js";
 import { registerAdminRoutes } from "./routes/admin.js";
 import { registerCategoryRoutes } from "./routes/categories.js";
+import { registerChatRoutes } from "./routes/chat.js";
 import { registerEngagementRoutes } from "./routes/engagement.js";
 import { registerCityRoutes } from "./routes/cities.js";
 import { registerListingRoutes } from "./routes/listings.js";
@@ -27,6 +29,10 @@ const app = Fastify({
 });
 
 const context: AppContext = { db, env };
+
+await app.register(websocket, {
+  options: { maxPayload: 64 * 1024 },
+});
 
 await app.register(cors, {
   origin: env.NODE_ENV === "production" ? false : true,
@@ -99,6 +105,7 @@ await app.register(
     registerUploadRoutes(instance, context);
     registerEngagementRoutes(instance, context);
     registerAdminRoutes(instance, context);
+    registerChatRoutes(instance, context);
   },
   { prefix: "/api" },
 );

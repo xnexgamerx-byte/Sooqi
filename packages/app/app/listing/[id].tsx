@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import {
@@ -15,11 +15,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { api, ApiError } from "../../src/api";
 import { ErrorState, Loading } from "../../src/components/StateView";
 import { arNumber, conditionLabel, priceLabel, timeAgo } from "../../src/format";
+import { useSession } from "../../src/session";
 import { cardShadow, colors, radius, space } from "../../src/theme";
 
 export default function ListingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { isSignedIn } = useSession();
 
   const listing = useQuery({
     queryKey: ["listing", id],
@@ -31,6 +34,41 @@ export default function ListingScreen() {
    * الرقم لا يصل مع بيانات الإعلان. يُطلب بضغطة، والخادم يسجّل كل طلب.
    * هذا ما يمنع كشط الأرقام بالجملة.
    */
+  /** الحفظ يحتاج حساباً؛ الضغط بدون تسجيل يفتح شاشة الدخول لا رسالة خطأ. */
+  const favorite = useMutation({
+    mutationFn: (next: boolean) =>
+      next ? api.addFavorite(id) : api.removeFavorite(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["listing", id] });
+      void queryClient.invalidateQueries({ queryKey: ["listings"] });
+    },
+  });
+
+  const report = useMutation({
+    mutationFn: (reason: string) =>
+      api.report({ targetType: "listing", targetId: id, reason }),
+    onSuccess: (result) => {
+      Alert.alert(
+        result.alreadyReported ? "بلّغت عنه سابقاً" : "وصل البلاغ",
+        result.alreadyReported
+          ? "بلاغك السابق على هذا الإعلان ما زال قيد المراجعة."
+          : "راح يراجعه فريق الإشراف.",
+      );
+    },
+    onError: () => Alert.alert("ما وصل البلاغ", "حاول مرة ثانية"),
+  });
+
+  const startChat = useMutation({
+    mutationFn: () => api.startConversation(id),
+    onSuccess: (conversationId) => router.push(`/chat/${conversationId}`),
+    onError: (error) => {
+      Alert.alert(
+        "تعذّر فتح المحادثة",
+        error instanceof ApiError ? error.message : "حاول مرة ثانية",
+      );
+    },
+  });
+
   const reveal = useMutation({
     mutationFn: () => api.revealPhone(id),
     onSuccess: (phone) => {
@@ -107,6 +145,26 @@ export default function ListingScreen() {
             accessibilityLabel="رجوع"
           >
             <Ionicons name="arrow-forward" size={20} color={colors.ink} />
+          </Pressable>
+
+          <Pressable
+            style={styles.fav}
+            onPress={() => {
+              if (!isSignedIn) {
+                router.push("/login");
+                return;
+              }
+              favorite.mutate(!data.isFavorite);
+            }}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel={data.isFavorite ? "أزل من المفضلة" : "احفظ"}
+          >
+            <Ionicons
+              name={data.isFavorite ? "heart" : "heart-outline"}
+              size={20}
+              color={data.isFavorite ? colors.red : colors.ink}
+            />
           </Pressable>
 
           {data.images.length > 1 ? (
@@ -187,6 +245,26 @@ export default function ListingScreen() {
           </View>
         </View>
 
+        <Pressable
+          style={styles.reportRow}
+          onPress={() => {
+            if (!isSignedIn) {
+              router.push("/login");
+              return;
+            }
+            Alert.alert("الإبلاغ عن هذا الإعلان", "شنو المشكلة؟", [
+              { text: "إلغاء", style: "cancel" },
+              { text: "إعلان وهمي", onPress: () => report.mutate("fake") },
+              { text: "محاولة احتيال", onPress: () => report.mutate("scam") },
+              { text: "مباع أو غير متوفر", onPress: () => report.mutate("sold") },
+            ]);
+          }}
+          accessibilityRole="button"
+        >
+          <Text style={styles.reportText}>الإبلاغ عن هذا الإعلان</Text>
+          <Ionicons name="chevron-back" size={17} color={colors.muted} />
+        </Pressable>
+
         <View style={[styles.card, styles.warning]}>
           <Ionicons name="bulb-outline" size={18} color="#A9720E" />
           <Text style={styles.warningText}>
@@ -201,6 +279,14 @@ export default function ListingScreen() {
       <View style={styles.actions}>
         <Pressable
           style={[styles.action, styles.actionGhost]}
+          onPress={() => {
+            if (!isSignedIn) {
+              router.push("/login");
+              return;
+            }
+            startChat.mutate();
+          }}
+          disabled={startChat.isPending}
           accessibilityRole="button"
           accessibilityLabel="دردشة"
         >
@@ -242,6 +328,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  fav: {
+    position: "absolute",
+    top: space.md,
+    left: space.lg,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reportRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: colors.surface,
+    marginHorizontal: space.lg,
+    marginTop: space.md,
+    borderRadius: radius.lg,
+    paddingHorizontal: space.lg,
+    paddingVertical: 14,
+    ...cardShadow,
+  },
+  reportText: { color: colors.red, fontWeight: "600", fontSize: 13.5 },
   count: {
     position: "absolute",
     bottom: space.md,

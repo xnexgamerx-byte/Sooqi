@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { priceLabel } from "../format";
@@ -11,9 +12,12 @@ import type { ListingSummary } from "../types";
 export function ListingCard({
   listing,
   onPress,
+  onToggleFavorite,
 }: {
   listing: ListingSummary;
   onPress: () => void;
+  /** يُترك فارغاً حيث لا معنى للحفظ، مثل قائمة إعلاناتي. */
+  onToggleFavorite?: () => void;
 }) {
   return (
     <Pressable
@@ -33,6 +37,24 @@ export function ListingCard({
         ) : (
           <Text style={styles.placeholder}>لا توجد صورة</Text>
         )}
+
+        {onToggleFavorite ? (
+          <Pressable
+            style={styles.fav}
+            onPress={onToggleFavorite}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={
+              listing.isFavorite ? "أزل من المفضلة" : "احفظ الإعلان"
+            }
+          >
+            <Ionicons
+              name={listing.isFavorite ? "heart" : "heart-outline"}
+              size={14}
+              color={listing.isFavorite ? "#FF5A52" : "#FFFFFF"}
+            />
+          </Pressable>
+        ) : null}
 
         <View style={styles.price}>
           <Text style={styles.priceText} numberOfLines={1}>
@@ -63,6 +85,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   placeholder: { color: colors.muted, fontSize: 11 },
+  fav: {
+    position: "absolute",
+    top: 6,
+    left: 6,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "rgba(20,22,28,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   price: {
     position: "absolute",
     bottom: 6,
