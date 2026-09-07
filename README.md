@@ -13,7 +13,7 @@
 ## التشغيل
 
 ```bash
-pnpm install
+pnpm install                  # يبني @souqna/db تلقائياً بعد التنصيب
 cp .env.example .env          # عبّئ DATABASE_URL
 pnpm db:push                  # ينشئ الجداول
 pnpm db:seed                  # يزرع 19 محافظة و 31 قسماً

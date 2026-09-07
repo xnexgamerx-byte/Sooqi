@@ -8,14 +8,15 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm --filter @souqna/server run dev",
+    "dev": "pnpm --filter @souqna/db run build && pnpm --filter @souqna/server run dev",
     "build": "pnpm run typecheck",
     "typecheck": "tsc --build && pnpm --filter @souqna/app run typecheck",
     "db:generate": "pnpm --filter @souqna/db run generate",
     "db:push": "pnpm --filter @souqna/db run push",
     "db:seed": "pnpm --filter @souqna/db run seed",
     "app": "pnpm --filter @souqna/app run start",
-    "android": "pnpm --filter @souqna/app run android"
+    "android": "pnpm --filter @souqna/app run android",
+    "postinstall": "pnpm --filter @souqna/db run build"
   },
   "devDependencies": {
     "typescript": "~5.9.3"
