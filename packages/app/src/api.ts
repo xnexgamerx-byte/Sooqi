@@ -1,5 +1,6 @@
 import type {
   Category,
+  CurrentUser,
   CategoryField,
   City,
   ListingDetail,
@@ -14,18 +15,15 @@ import type {
 export const API_URL =
   process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:5000";
 
-/**
- * معرّف المستخدم في وضع التطوير. يُرسَل في ترويسة x-user-id ويقبله الخادم
- * فقط حين DEV_AUTH=1. يُستبدل بتسجيل الدخول الحقيقي لاحقاً.
- */
-let devUserId: string | null = null;
+/** رمز الجلسة. يضبطه src/session.ts بعد القراءة من التخزين الآمن. */
+let authToken: string | null = null;
 
-export function setDevUserId(id: string | null) {
-  devUserId = id;
+export function setAuthToken(token: string | null) {
+  authToken = token;
 }
 
-export function getDevUserId() {
-  return devUserId;
+export function getAuthToken() {
+  return authToken;
 }
 
 export class ApiError extends Error {
@@ -42,7 +40,7 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/json" };
   if (init?.body) headers["Content-Type"] = "application/json";
-  if (devUserId) headers["x-user-id"] = devUserId;
+  if (authToken) headers.Authorization = `Bearer ${authToken}`;
 
   let response: Response;
   try {
@@ -69,6 +67,63 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 /* ------------------------------------------------------------- endpoints */
 
 export const api = {
+  /* ------------------------------------------------------------ المصادقة */
+
+  authMethods: () =>
+    request<{ phone: boolean; smsDelivers: boolean; google: boolean }>(
+      "/api/auth/methods",
+    ),
+
+  requestOtp: (phone: string) =>
+    request<{
+      ok: boolean;
+      phone: string;
+      expiresInSeconds: number;
+      delivers: boolean;
+    }>("/api/auth/otp/request", {
+      method: "POST",
+      body: JSON.stringify({ phone }),
+    }),
+
+  verifyOtp: (phone: string, code: string, deviceName?: string) =>
+    request<{ token: string; expiresAt: string; user: CurrentUser }>(
+      "/api/auth/otp/verify",
+      {
+        method: "POST",
+        body: JSON.stringify({ phone, code, deviceName }),
+      },
+    ),
+
+  signInWithGoogle: (idToken: string, deviceName?: string) =>
+    request<{ token: string; expiresAt: string; user: CurrentUser }>(
+      "/api/auth/google",
+      { method: "POST", body: JSON.stringify({ idToken, deviceName }) },
+    ),
+
+  me: () => request<{ user: CurrentUser }>("/api/auth/me"),
+
+  updateProfile: (name: string) =>
+    request<{ user: CurrentUser }>("/api/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ name }),
+    }),
+
+  logout: () => request<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
+
+  logoutAll: () =>
+    request<{ ok: boolean }>("/api/auth/logout-all", { method: "POST" }),
+
+  deleteAccount: () =>
+    request<{ ok: boolean }>("/api/auth/me", { method: "DELETE" }),
+
+  registerPushToken: (token: string, platform: string) =>
+    request<{ ok: boolean }>("/api/auth/push-token", {
+      method: "POST",
+      body: JSON.stringify({ token, platform }),
+    }),
+
+  /* ------------------------------------------------------------- المحتوى */
+
   categories: () =>
     request<{ categories: Category[] }>("/api/categories").then(
       (data) => data.categories,

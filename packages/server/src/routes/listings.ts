@@ -436,7 +436,7 @@ export function registerListingRoutes(
 
   /** إعلاناتي، بكل الحالات. تستخدمها شاشة «إعلاناتي». */
   app.get("/me/listings", async (request) => {
-    const userId = requireUserId(ctx, request);
+    const userId = requireUserId(request);
 
     const rows = await ctx.db
       .select({
@@ -470,7 +470,7 @@ export function registerListingRoutes(
 
   /** ينشئ مسودة. النشر خطوة منفصلة تتحقق من الحدّ. */
   app.post("/listings", async (request, reply) => {
-    const userId = requireUserId(ctx, request);
+    const userId = requireUserId(request);
     const body = createBody.parse(request.body);
 
     const [category] = await ctx.db
@@ -523,7 +523,7 @@ export function registerListingRoutes(
   app.patch<{ Params: { id: string } }>(
     "/listings/:id",
     async (request) => {
-      const userId = requireUserId(ctx, request);
+      const userId = requireUserId(request);
       const body = updateBody.parse(request.body);
 
       const [existing] = await ctx.db
@@ -590,7 +590,7 @@ export function registerListingRoutes(
   app.post<{ Params: { id: string } }>(
     "/listings/:id/publish",
     async (request) => {
-      const userId = requireUserId(ctx, request);
+      const userId = requireUserId(request);
 
       const [existing] = await ctx.db
         .select({
@@ -665,7 +665,7 @@ export function registerListingRoutes(
   app.post<{ Params: { id: string } }>(
     "/listings/:id/images",
     async (request, reply) => {
-      const userId = requireUserId(ctx, request);
+      const userId = requireUserId(request);
       const body = z
         .object({
           images: z
@@ -707,7 +707,7 @@ export function registerListingRoutes(
   app.delete<{ Params: { id: string; imageId: string } }>(
     "/listings/:id/images/:imageId",
     async (request) => {
-      const userId = requireUserId(ctx, request);
+      const userId = requireUserId(request);
       const listing = await ownedListing(ctx, request.params.id, userId);
 
       const deleted = await ctx.db

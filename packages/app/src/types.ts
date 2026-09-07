@@ -1,5 +1,18 @@
 /** أنواع ردود الخادم. تطابق ما ترجعه packages/server/src/routes. */
 
+export type CurrentUser = {
+  id: string;
+  publicId: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  isVerified: boolean;
+  phoneVerifiedAt: string | null;
+  activeListingLimit: number;
+  role: "user" | "moderator" | "admin";
+  createdAt: string;
+};
+
 export type Category = {
   id: number;
   slug: string;

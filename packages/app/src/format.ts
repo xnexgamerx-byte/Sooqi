@@ -15,6 +15,16 @@ export function arNumber(value: number): string {
   return grouped.replace(/[0-9]/g, (digit) => AR_DIGITS[Number(digit)] ?? digit);
 }
 
+/**
+ * أرقام هندية بلا فواصل آلاف.
+ *
+ * لأرقام الحسابات والرموز: «٤٢٥٣٣٩٦٣» لا «٤٢٬٥٣٣٬٩٦٣» — الفاصلة تجعل
+ * المعرّف يبدو مبلغاً.
+ */
+export function arDigits(value: string | number): string {
+  return String(value).replace(/[0-9]/g, (digit) => AR_DIGITS[Number(digit)] ?? digit);
+}
+
 /** السعر بالدينار، أو النص البديل حين لا يوجد سعر معلن. */
 export function priceLabel(priceIqd: number | null | undefined): string {
   if (priceIqd === null || priceIqd === undefined) return "السعر عند التواصل";

@@ -1,28 +1,59 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import {
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { API_URL, getDevUserId, setDevUserId } from "../../src/api";
+import { api, API_URL, ApiError } from "../../src/api";
 import { AppHeader } from "../../src/components/AppHeader";
+import { arDigits, arNumber } from "../../src/format";
+import { useSession } from "../../src/session";
 import { cardShadow, colors, radius, space } from "../../src/theme";
 
 export default function AccountScreen() {
-  const queryClient = useQueryClient();
-  const [draftId, setDraftId] = useState(getDevUserId() ?? "");
-  const [signedInAs, setSignedInAs] = useState(getDevUserId());
+  const router = useRouter();
+  const { isSignedIn, isLoading, user, signOut } = useSession();
 
-  const apply = (id: string | null) => {
-    setDevUserId(id);
-    setSignedInAs(id);
-    void queryClient.invalidateQueries();
+  const remove = useMutation({
+    mutationFn: api.deleteAccount,
+    onSuccess: async () => {
+      await signOut();
+      Alert.alert("انحذف الحساب", "انحذف حسابك وكل إعلاناتك نهائياً.");
+    },
+    onError: (error) => {
+      Alert.alert(
+        "تعذّر حذف الحساب",
+        error instanceof ApiError ? error.message : "حاول مرة ثانية",
+      );
+    },
+  });
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "حذف الحساب نهائياً",
+      "راح تنحذف إعلاناتك ومحادثاتك كلها. ما تكدر ترجعها.",
+      [
+        { text: "إلغاء", style: "cancel" },
+        {
+          text: "احذف",
+          style: "destructive",
+          onPress: () => remove.mutate(),
+        },
+      ],
+    );
+  };
+
+  const confirmSignOut = () => {
+    Alert.alert("خروج", "متأكد تريد تسجّل خروج؟", [
+      { text: "إلغاء", style: "cancel" },
+      { text: "خروج", style: "destructive", onPress: () => void signOut() },
+    ]);
   };
 
   return (
@@ -38,74 +69,59 @@ export default function AccountScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.card}>
-          <View style={styles.profile}>
-            <View style={styles.avatar}>
-              <Ionicons name="person" size={34} color={colors.muted} />
+        {isSignedIn && user ? (
+          <View style={styles.card}>
+            <View style={styles.profile}>
+              <View style={styles.avatar}>
+                <Ionicons name="person" size={34} color={colors.muted} />
+              </View>
+              <View style={{ flex: 1, gap: 4 }}>
+                <View style={styles.nameRow}>
+                  <Text style={styles.name}>{user.name}</Text>
+                  {user.isVerified ? (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={17}
+                      color={colors.blue}
+                    />
+                  ) : null}
+                </View>
+                <Text style={styles.meta}>
+                  رقم الحساب {arDigits(user.publicId)}
+                </Text>
+                {user.phone ? (
+                  <Text style={styles.meta}>{user.phone}</Text>
+                ) : null}
+              </View>
             </View>
-            <View style={{ flex: 1, gap: 4 }}>
-              <Text style={styles.name}>
-                {signedInAs ? "مستخدم تجريبي" : "زائر"}
-              </Text>
-              <Text style={styles.meta}>
-                {signedInAs ? `المعرّف ${signedInAs.slice(0, 8)}…` : "غير مسجّل"}
-              </Text>
+
+            <View style={styles.limitBox}>
+              <View style={styles.limitRow}>
+                <Text style={styles.limitLabel}>حدّ الإعلانات الفعّالة</Text>
+                <Text style={styles.limitValue}>
+                  {arNumber(user.activeListingLimit)}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-
-        {/*
-          تسجيل الدخول الحقيقي لم يُبنَ بعد. هذه البطاقة تسمح بتجربة مسارات
-          النشر مقابل خادم يعمل بـ DEV_AUTH=1، وتُحذف كاملة حين يصل تسجيل
-          الدخول بحساب Google.
-        */}
-        <View style={styles.card}>
-          <Text style={styles.section}>دخول تجريبي</Text>
-          <Text style={styles.body}>
-            تسجيل الدخول لم يُبنَ بعد. الصق معرّف مستخدم من قاعدة البيانات
-            لتجربة النشر. يعمل فقط مع خادم مضبوط على DEV_AUTH=1.
-          </Text>
-
-          <TextInput
-            style={styles.input}
-            value={draftId}
-            onChangeText={setDraftId}
-            placeholder="00000000-0000-0000-0000-000000000000"
-            placeholderTextColor={colors.muted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            textAlign="right"
-          />
-
-          <View style={styles.row}>
+        ) : (
+          <View style={styles.card}>
+            <Text style={styles.section}>ما سجّلت دخول</Text>
+            <Text style={styles.body}>
+              تكدر تتصفّح كل الإعلانات بدون حساب. تحتاج حساباً بس لنشر إعلان
+              أو حفظ المفضلة.
+            </Text>
             <Pressable
-              style={[styles.button, styles.buttonPrimary]}
-              onPress={() => apply(draftId.trim() || null)}
-              accessibilityRole="button"
+              style={styles.primary}
+              onPress={() => router.push("/login")}
+              disabled={isLoading}
             >
-              <Text style={styles.buttonPrimaryText}>فعّل</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonGhost]}
-              onPress={() => {
-                setDraftId("");
-                apply(null);
-              }}
-              accessibilityRole="button"
-            >
-              <Text style={styles.buttonGhostText}>خروج</Text>
+              <Text style={styles.primaryText}>
+                {isLoading ? "لحظة…" : "سجّل دخولك"}
+              </Text>
             </Pressable>
           </View>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.section}>الخادم</Text>
-          <Text style={styles.mono}>{API_URL}</Text>
-          <Text style={styles.body}>
-            على جهاز حقيقي، localhost يشير إلى الجهاز نفسه. اضبط
-            EXPO_PUBLIC_API_URL على عنوان حاسوبك في الشبكة.
-          </Text>
-        </View>
+        )}
 
         <View style={styles.card}>
           <Text style={styles.section}>تحتاج مساعدة؟</Text>
@@ -115,13 +131,23 @@ export default function AccountScreen() {
           <Row icon="shield-checkmark-outline" label="سياسة الخصوصية" />
         </View>
 
-        <View style={styles.card}>
-          <Row icon="trash-outline" label="حذف الحساب نهائياً" danger />
-          <Text style={styles.note}>
-            حذف الحساب من داخل التطبيق شرط إلزامي لقبول التطبيق في Google Play.
-          </Text>
-        </View>
+        {isSignedIn ? (
+          <View style={styles.card}>
+            <Row icon="log-out-outline" label="خروج" onPress={confirmSignOut} />
+            <Row
+              icon="trash-outline"
+              label={remove.isPending ? "جاري الحذف…" : "حذف الحساب نهائياً"}
+              danger
+              onPress={remove.isPending ? undefined : confirmDelete}
+            />
+            <Text style={styles.note}>
+              حذف الحساب من داخل التطبيق شرط إلزامي لقبول التطبيق في Google
+              Play.
+            </Text>
+          </View>
+        ) : null}
 
+        <Text style={styles.server}>{API_URL}</Text>
         <View style={{ height: space.xxl }} />
       </ScrollView>
     </SafeAreaView>
@@ -132,13 +158,19 @@ function Row({
   icon,
   label,
   danger,
+  onPress,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   danger?: boolean;
+  onPress?: () => void;
 }) {
   return (
-    <Pressable style={styles.listRow} accessibilityRole="button">
+    <Pressable
+      style={({ pressed }) => [styles.listRow, pressed && styles.pressed]}
+      accessibilityRole="button"
+      onPress={onPress}
+    >
       <Ionicons
         name={icon}
         size={19}
@@ -169,43 +201,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   name: { fontSize: 19, fontWeight: "600", color: colors.ink },
   meta: { fontSize: 12.5, color: colors.muted },
-  section: { fontSize: 16, fontWeight: "600", color: colors.ink },
-  body: { fontSize: 12.5, color: colors.ink2, lineHeight: 22 },
-  mono: { fontSize: 13, color: colors.blue, fontWeight: "600" },
-  input: {
-    backgroundColor: colors.surface2,
-    borderWidth: 1,
+  limitBox: {
+    borderWidth: 1.4,
+    borderStyle: "dashed",
     borderColor: colors.line,
     borderRadius: radius.md,
-    paddingHorizontal: 13,
-    paddingVertical: 11,
-    fontSize: 12.5,
-    color: colors.ink,
+    padding: space.md,
   },
-  row: { flexDirection: "row", gap: space.sm },
-  button: {
-    flex: 1,
+  limitRow: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 11,
-    borderRadius: radius.sm,
+    justifyContent: "space-between",
   },
-  buttonPrimary: { backgroundColor: colors.blue },
-  buttonPrimaryText: { color: colors.white, fontWeight: "600", fontSize: 14 },
-  buttonGhost: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
+  limitLabel: { fontSize: 13.5, fontWeight: "600", color: colors.ink },
+  limitValue: { fontSize: 15, fontWeight: "700", color: colors.blue },
+  section: { fontSize: 16, fontWeight: "600", color: colors.ink },
+  body: { fontSize: 13, color: colors.ink2, lineHeight: 23 },
+  primary: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    paddingVertical: 13,
+    alignItems: "center",
   },
-  buttonGhostText: { color: colors.ink, fontWeight: "600", fontSize: 14 },
+  primaryText: { color: colors.white, fontWeight: "700", fontSize: 15 },
   listRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: space.md,
     paddingVertical: 11,
   },
+  pressed: { opacity: 0.6 },
   listLabel: { flex: 1, fontSize: 14.5, fontWeight: "500", color: colors.ink },
   danger: { color: colors.red },
   note: { fontSize: 11, color: colors.muted, lineHeight: 19 },
+  server: { fontSize: 10.5, color: colors.muted, textAlign: "center" },
 });

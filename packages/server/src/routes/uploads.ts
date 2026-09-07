@@ -19,7 +19,7 @@ export function registerUploadRoutes(app: FastifyInstance, ctx: AppContext) {
    * إنشاء الإعلان. الصورة لا تمرّ عبر خادمنا.
    */
   app.post("/uploads/sign", async (request) => {
-    requireUserId(ctx, request);
+    requireUserId(request);
 
     if (!uploadsEnabled) {
       throw badRequest(

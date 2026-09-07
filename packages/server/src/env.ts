@@ -13,6 +13,14 @@ const schema = z.object({
   R2_ACCESS_KEY_ID: z.string().optional(),
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   R2_BUCKET: z.string().optional(),
+
+  /** معرّف عميل Google. فارغ يعطّل تسجيل الدخول بحساب Google. */
+  GOOGLE_CLIENT_ID: z.string().optional(),
+
+  /** "console" يطبع الرمز ولا يرسل. "http" يرسل عبر بوابة. */
+  SMS_PROVIDER: z.enum(["console", "http"]).default("console"),
+  SMS_API_URL: z.string().url().optional(),
+  SMS_API_KEY: z.string().optional(),
   /**
    * مصادقة التطوير: تقبل ترويسة x-user-id بدل تسجيل دخول حقيقي.
    * ترفض الخادم الإقلاع إذا فُعّلت في الإنتاج.
@@ -61,6 +69,17 @@ if (r2Present.length === r2Keys.length && !env.R2_PUBLIC_URL) {
     "R2_PUBLIC_URL مطلوب مع إعدادات R2، وإلا لن يعرف التطبيق من أين يقرأ الصور.",
   );
   process.exit(1);
+}
+
+if (env.SMS_PROVIDER === "http" && !env.SMS_API_URL) {
+  console.error("SMS_API_URL مطلوب مع SMS_PROVIDER=http");
+  process.exit(1);
+}
+
+if (env.NODE_ENV === "production" && env.SMS_PROVIDER === "console") {
+  console.warn(
+    "تحذير: SMS_PROVIDER=console في الإنتاج. رموز التحقق ستُطبع في السجلّ ولن تصل لأحد.",
+  );
 }
 
 if (env.NODE_ENV === "production" && env.DEV_AUTH) {

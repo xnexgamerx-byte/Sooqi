@@ -418,6 +418,88 @@ export const blocks = pgTable(
   (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] })],
 );
 
+/* --------------------------------------------------- auth and messaging */
+
+/**
+ * جلسات مفتوحة. رمز معتم في جدول لا JWT.
+ *
+ * الـJWT لا يمكن إبطاله قبل انتهائه؛ حين يُسرق جهاز أو يُحظر مستخدم نريد
+ * قطع وصوله في الحال. صفٌّ في جدول يُحذف، والرمز يموت فوراً.
+ *
+ * نخزّن تجزئة الرمز لا الرمز نفسه: تسريب نسخة من قاعدة البيانات لا يمنح
+ * المهاجم جلسات جاهزة.
+ */
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    deviceName: text("device_name"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("sessions_token_key").on(t.tokenHash),
+    index("sessions_user_idx").on(t.userId),
+  ],
+);
+
+/**
+ * رموز التحقق بالرسائل القصيرة.
+ *
+ * نخزّن التجزئة لا الرمز، ونعدّ المحاولات: خمس محاولات خاطئة تحرق الرمز،
+ * وإلا فتخمين أربعة أرقام مسألة ثوانٍ.
+ */
+export const otpCodes = pgTable(
+  "otp_codes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    phone: varchar("phone", { length: 20 }).notNull(),
+    codeHash: varchar("code_hash", { length: 64 }).notNull(),
+    attempts: integer("attempts").notNull().default(0),
+    /** بصمة الطالب المُجزّأة، لتحديد المعدّل ورصد إساءة الاستخدام. */
+    requesterHash: varchar("requester_hash", { length: 64 }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("otp_phone_idx").on(t.phone, t.createdAt),
+    index("otp_requester_idx").on(t.requesterHash, t.createdAt),
+  ],
+);
+
+/** رموز الإشعارات لكل جهاز. المستخدم قد يملك أكثر من جهاز. */
+export const pushTokens = pgTable(
+  "push_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull(),
+    platform: varchar("platform", { length: 12 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("push_tokens_token_key").on(t.token),
+    index("push_tokens_user_idx").on(t.userId),
+  ],
+);
+
 /* ------------------------------------------------------- saved searches */
 
 export type SavedSearchQuery = {

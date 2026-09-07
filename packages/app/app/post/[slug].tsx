@@ -16,9 +16,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { api, ApiError, getDevUserId } from "../../src/api";
+import { api, ApiError } from "../../src/api";
 import { ErrorState, Loading } from "../../src/components/StateView";
 import { arNumber } from "../../src/format";
+import { useSession } from "../../src/session";
 import { colors, radius, space } from "../../src/theme";
 import {
   captureImage,
@@ -43,6 +44,7 @@ export default function PostFormScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isSignedIn } = useSession();
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -131,7 +133,8 @@ export default function PostFormScreen() {
     attributes,
     photoCount: photos.length,
   });
-  const canSubmit = problems.length === 0 && !submit.isPending;
+  const canSubmit =
+    problems.length === 0 && isSignedIn && !submit.isPending;
 
   if (fields.isPending || cities.isPending) {
     return (
@@ -367,11 +370,15 @@ export default function PostFormScreen() {
             </View>
           ) : null}
 
-          {!getDevUserId() ? (
-            <Text style={styles.authNote}>
-              تحتاج تسجيل دخول لنشر إعلان. تسجيل الدخول لم يُبنَ بعد؛ اضبط
-              معرّف مستخدم تجريبي من شاشة «حسابي».
-            </Text>
+          {!isSignedIn ? (
+            <Pressable
+              style={styles.authNote}
+              onPress={() => router.push("/login")}
+            >
+              <Text style={styles.authNoteText}>
+                تحتاج حساباً لنشر إعلان. اضغط هنا لتسجيل الدخول.
+              </Text>
+            </Pressable>
           ) : null}
         </ScrollView>
 
@@ -602,10 +609,16 @@ const styles = StyleSheet.create({
   },
   problem: { fontSize: 12.5, color: "#A32B23", lineHeight: 20 },
   authNote: {
-    fontSize: 12,
-    color: colors.muted,
+    backgroundColor: colors.blueSoft,
+    borderRadius: radius.md,
+    padding: space.md,
+  },
+  authNoteText: {
+    fontSize: 12.5,
+    color: colors.blue,
     lineHeight: 21,
     textAlign: "center",
+    fontWeight: "600",
   },
   footer: {
     padding: space.md,

@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { I18nManager, Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, I18nManager, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { loadStoredToken } from "../src/session";
 import { colors } from "../src/theme";
 
 /**
@@ -35,6 +36,26 @@ export default function RootLayout() {
       }),
   );
 
+  /**
+   * الرمز يُقرأ قبل رسم أي شاشة.
+   *
+   * بدون هذه البوابة ينطلق أول استعلام بلا ترويسة مصادقة، فيرى المستخدم
+   * المسجّل شاشة «سجّل الدخول» للحظة قبل أن تُصحّح نفسها.
+   */
+  const [tokenReady, setTokenReady] = useState(false);
+
+  useEffect(() => {
+    void loadStoredToken().then(() => setTokenReady(true));
+  }, []);
+
+  if (!tokenReady) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: "center" }}>
+        <ActivityIndicator color={colors.blue} />
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -58,6 +79,7 @@ export default function RootLayout() {
               name="post/[slug]"
               options={{ presentation: "modal" }}
             />
+            <Stack.Screen name="login" options={{ presentation: "modal" }} />
           </Stack>
         </QueryClientProvider>
       </SafeAreaProvider>

@@ -11,22 +11,23 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { api, ApiError, getDevUserId } from "../../src/api";
+import { api, ApiError } from "../../src/api";
 import { AppHeader } from "../../src/components/AppHeader";
 import { EmptyState, ErrorState, Loading } from "../../src/components/StateView";
 import { arNumber, priceLabel, statusColor, statusLabel } from "../../src/format";
+import { useSession } from "../../src/session";
 import { cardShadow, colors, radius, space } from "../../src/theme";
 import type { MyListing } from "../../src/types";
 
 export default function MyAdsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const signedIn = Boolean(getDevUserId());
+  const { isSignedIn } = useSession();
 
   const listings = useQuery({
     queryKey: ["my-listings"],
     queryFn: api.myListings,
-    enabled: signedIn,
+    enabled: isSignedIn,
   });
 
   const publish = useMutation({
@@ -50,11 +51,16 @@ export default function MyAdsScreen() {
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <AppHeader title="إعلاناتي" />
 
-      {!signedIn ? (
-        <EmptyState
-          title="سجّل الدخول لتشوف إعلاناتك"
-          hint="تسجيل الدخول لم يُبنَ بعد. اضبط معرّف مستخدم تجريبي من شاشة «حسابي»."
-        />
+      {!isSignedIn ? (
+        <View style={styles.gate}>
+          <EmptyState
+            title="سجّل الدخول لتشوف إعلاناتك"
+            hint="تحتاج حساباً لنشر الإعلانات ومتابعة مشاهداتها."
+          />
+          <Pressable style={styles.gateCta} onPress={() => router.push("/login")}>
+            <Text style={styles.gateCtaText}>سجّل دخولك</Text>
+          </Pressable>
+        </View>
       ) : listings.isPending ? (
         <Loading />
       ) : listings.isError ? (
@@ -194,6 +200,14 @@ function Tile({
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
+  gate: { flex: 1, justifyContent: "center", paddingHorizontal: space.xxl },
+  gateCta: {
+    backgroundColor: colors.blue,
+    borderRadius: radius.md,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  gateCtaText: { color: colors.white, fontWeight: "700", fontSize: 15 },
   content: { padding: space.lg, gap: space.md },
   tiles: { flexDirection: "row", gap: space.md },
   tile: {

@@ -1,8 +1,11 @@
 import cors from "@fastify/cors";
 import { createDb } from "@souqna/db";
 import Fastify from "fastify";
+import { ZodError } from "zod";
 import { env } from "./env.js";
 import { HttpError } from "./errors.js";
+import { registerAuth } from "./auth.js";
+import { registerAuthRoutes } from "./routes/auth.js";
 import { registerCategoryRoutes } from "./routes/categories.js";
 import { registerCityRoutes } from "./routes/cities.js";
 import { registerListingRoutes } from "./routes/listings.js";
@@ -44,6 +47,30 @@ app.setErrorHandler((error, request, reply) => {
     });
   }
 
+  /**
+   * أخطاء Zod.
+   *
+   * نستدعي schema.parse يدوياً في المسارات بدل تمرير المخطط إلى Fastify،
+   * فالخطأ لا يحمل حقل validation ولا يلتقطه الفرع أعلاه. بدون هذا الفرع
+   * يرد الخادم 500 على كل حقل ناقص، وهو ما يخفي خطأ العميل خلف «خطأ خادم».
+   */
+  if (error instanceof ZodError) {
+    const first = error.issues[0];
+    const field = first?.path.join(".");
+    return reply.status(400).send({
+      error: {
+        code: "validation_failed",
+        message: field
+          ? `تحقق من الحقل: ${field}`
+          : "البيانات المرسلة غير صالحة",
+        fields: error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+        })),
+      },
+    });
+  }
+
   request.log.error({ err: error }, "unhandled error");
   return reply.status(500).send({
     error: { code: "internal_error", message: "صار خطأ. حاول مرة ثانية." },
@@ -56,10 +83,14 @@ app.setNotFoundHandler((_request, reply) =>
     .send({ error: { code: "not_found", message: "المسار غير موجود" } }),
 );
 
+// يحلّ الجلسة مرة واحدة لكل طلب قبل أي مسار
+registerAuth(app, context);
+
 app.get("/health", async () => ({ ok: true, at: new Date().toISOString() }));
 
 await app.register(
   async (instance) => {
+    registerAuthRoutes(instance, context);
     registerCategoryRoutes(instance, context);
     registerCityRoutes(instance, context);
     registerListingRoutes(instance, context);
