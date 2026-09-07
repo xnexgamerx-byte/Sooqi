@@ -1,13 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { priceLabel } from "../format";
 import { colors, radius, space } from "../theme";
+import { usePressScale } from "../usePressScale";
 import type { ListingSummary } from "../types";
 
 /**
- * بطاقة إعلان في الشبكة الثلاثية: صورة مربعة، شارة سعر داكنة أسفل اليسار،
- * وقلب أعلى اليسار. مطابقة لـ docs/screens.html.
+ * بطاقة إعلان: صورة مربعة، شارة سعر داكنة أسفل اليسار، وقلب أعلى اليسار.
+ *
+ * الصورة هي المنتَج في سوق مستعمَل — الناس يمرّون على الشبكة بأعينهم لا
+ * بقراءة العناوين — فتأخذ كل عرض البطاقة، والنص يخدمها لا العكس.
  */
 export function ListingCard({
   listing,
@@ -19,13 +22,19 @@ export function ListingCard({
   /** يُترك فارغاً حيث لا معنى للحفظ، مثل قائمة إعلاناتي. */
   onToggleFavorite?: () => void;
 }) {
+  const press = usePressScale(0.975);
+
   return (
-    <Pressable
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${listing.title}، ${priceLabel(listing.priceIqd)}`}
+    <Animated.View
+      style={[styles.card, { transform: [{ scale: press.scale }] }]}
     >
+      <Pressable
+        onPress={onPress}
+        onPressIn={press.onPressIn}
+        onPressOut={press.onPressOut}
+        accessibilityRole="button"
+        accessibilityLabel={`${listing.title}، ${priceLabel(listing.priceIqd)}`}
+      >
       <View style={styles.thumb}>
         {listing.coverImage ? (
           <Image
@@ -50,7 +59,7 @@ export function ListingCard({
           >
             <Ionicons
               name={listing.isFavorite ? "heart" : "heart-outline"}
-              size={14}
+              size={16}
               color={listing.isFavorite ? "#FF5A52" : "#FFFFFF"}
             />
           </Pressable>
@@ -63,22 +72,22 @@ export function ListingCard({
         </View>
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>
-        {listing.title}
-      </Text>
-      <Text style={styles.meta} numberOfLines={1}>
-        {listing.cityNameAr}
-      </Text>
-    </Pressable>
+        <Text style={styles.title} numberOfLines={2}>
+          {listing.title}
+        </Text>
+        <Text style={styles.meta} numberOfLines={1}>
+          {listing.cityNameAr}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { flex: 1, gap: 5 },
-  pressed: { opacity: 0.7 },
+  card: { flex: 1 },
   thumb: {
     aspectRatio: 1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     backgroundColor: "#DDE2EA",
     overflow: "hidden",
     alignItems: "center",
@@ -87,31 +96,32 @@ const styles = StyleSheet.create({
   placeholder: { color: colors.muted, fontSize: 11 },
   fav: {
     position: "absolute",
-    top: 6,
-    left: 6,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    top: 8,
+    left: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: "rgba(20,22,28,0.55)",
     alignItems: "center",
     justifyContent: "center",
   },
   price: {
     position: "absolute",
-    bottom: 6,
-    left: 6,
-    backgroundColor: colors.dark,
-    borderRadius: 6,
-    paddingHorizontal: space.sm,
-    paddingVertical: 3.5,
+    bottom: 8,
+    left: 8,
+    backgroundColor: "rgba(21,22,26,0.88)",
+    borderRadius: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 4.5,
     maxWidth: "92%",
   },
-  priceText: { color: colors.white, fontSize: 10.5, fontWeight: "600" },
+  priceText: { color: colors.white, fontSize: 12, fontWeight: "700" },
   title: {
-    fontSize: 11.5,
+    fontSize: 13,
     color: colors.ink,
     fontWeight: "500",
-    lineHeight: 17,
+    lineHeight: 19,
+    marginTop: 7,
   },
-  meta: { fontSize: 10.5, color: colors.muted },
+  meta: { fontSize: 11.5, color: colors.muted, marginTop: 1 },
 });

@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { api } from "../../src/api";
-import { categoryTint } from "../../src/categoryImages";
+import { categoryGlyph, categoryTint } from "../../src/categoryImages";
 import { ErrorState, Loading } from "../../src/components/StateView";
 import { cardShadow, colors, radius, space } from "../../src/theme";
 
@@ -58,8 +58,8 @@ export default function PostPickerScreen() {
                 accessibilityRole="button"
               >
                 <View style={[styles.icon, { backgroundColor: tint.bg }]}>
-                  <Text style={[styles.glyph, { color: tint.fg }]}>
-                    {category.nameAr.slice(0, 1)}
+                  <Text style={styles.glyph}>
+                    {categoryGlyph(category.slug)}
                   </Text>
                 </View>
                 <Text style={styles.rowLabel}>{category.nameAr}</Text>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  glyph: { fontSize: 18, fontWeight: "700" },
+  glyph: { fontSize: 19, lineHeight: 24 },
   rowLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: colors.ink },
   note: {
     fontSize: 12,

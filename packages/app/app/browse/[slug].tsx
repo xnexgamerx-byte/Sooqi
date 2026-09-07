@@ -174,7 +174,7 @@ export default function BrowseScreen() {
         <FlatList
           data={rows}
           keyExtractor={(item) => item.id}
-          numColumns={3}
+          numColumns={2}
           columnWrapperStyle={styles.column}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}

@@ -1,11 +1,19 @@
 import { Image } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { categoryImage, categoryTint } from "../categoryImages";
-import { cardShadow, colors, radius, space } from "../theme";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { categoryGlyph, categoryImage, categoryTint } from "../categoryImages";
+import { colors, radius, space } from "../theme";
+import { usePressScale } from "../usePressScale";
 
 /**
- * بطاقة قسم في الشبكة الرباعية. الأقسام غير المفعّلة تظهر باهتة مع شارة
- * «قريباً» بدل إخفائها — شبكة ممتلئة تبدو أفضل من شبكة فيها بطاقتان.
+ * بطاقة قسم في الشبكة الرباعية.
+ *
+ * التخطيط مأخوذ من التصميم المرجعي: الاسم في الأعلى والرمز أسفله في الجهة
+ * المقابلة. توسيط كل شيء يبدو أنظف في لقطة واحدة، لكن العين تقرأ عشرين
+ * بطاقة أسرع حين تكون الأسماء كلها على خط واحد.
+ *
+ * الأقسام غير المفعّلة تبقى ظاهرة باهتة: شبكة ممتلئة تعد بسوق كامل، وشبكة
+ * فيها بطاقتان تبدو مهجورة. ولا شارة «قريباً» على كل بطاقة — تسعة عشر
+ * تكراراً للكلمة نفسها ضجيج، وسطر واحد تحت العنوان يقولها مرة.
  */
 export function CategoryTile({
   slug,
@@ -20,67 +28,77 @@ export function CategoryTile({
 }) {
   const source = categoryImage(slug);
   const tint = categoryTint(slug);
+  const press = usePressScale();
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.tile,
-        !isActive && styles.dim,
-        pressed && isActive && styles.pressed,
-      ]}
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={isActive ? nameAr : `${nameAr}، قريباً`}
-    >
-      <View style={[styles.icon, { backgroundColor: tint.bg }]}>
-        {source ? (
-          <Image source={source} style={styles.image} contentFit="contain" />
-        ) : (
-          <Text style={[styles.glyph, { color: tint.fg }]}>
-            {nameAr.slice(0, 1)}
-          </Text>
-        )}
-      </View>
+    <Animated.View style={{ transform: [{ scale: press.scale }] }}>
+      <Pressable
+        style={[styles.tile, !isActive && styles.dim]}
+        onPress={onPress}
+        onPressIn={isActive ? press.onPressIn : undefined}
+        onPressOut={isActive ? press.onPressOut : undefined}
+        android_ripple={
+          isActive ? { color: "rgba(11,95,217,0.10)", borderless: false } : null
+        }
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !isActive }}
+        accessibilityLabel={isActive ? nameAr : `${nameAr}، قريباً`}
+      >
+        <Text style={styles.label} numberOfLines={2}>
+          {nameAr}
+        </Text>
 
-      <Text style={styles.label} numberOfLines={2}>
-        {nameAr}
-      </Text>
-
-      {isActive ? null : <Text style={styles.soon}>قريباً</Text>}
-    </Pressable>
+        <View style={styles.bottom}>
+          <View style={[styles.badge, { backgroundColor: tint.bg }]}>
+            {source ? (
+              <Image source={source} style={styles.image} contentFit="contain" />
+            ) : (
+              <Text style={styles.glyph}>{categoryGlyph(slug)}</Text>
+            )}
+          </View>
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   tile: {
-    flex: 1,
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
-    paddingVertical: space.md,
-    paddingHorizontal: 6,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: space.sm,
-    minHeight: 104,
-    ...cardShadow,
+    paddingTop: 10,
+    paddingBottom: 8,
+    paddingHorizontal: 9,
+    minHeight: 96,
+    justifyContent: "space-between",
+    // حدّ شعرة بدل ظل: عشرون ظلاً متجاوراً يصنعان ضبابة رمادية
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.line,
+    overflow: "hidden",
   },
-  dim: { opacity: 0.55 },
-  pressed: { opacity: 0.7 },
-  icon: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: { width: 30, height: 30 },
-  glyph: { fontSize: 20, fontWeight: "700" },
+  dim: { opacity: 0.5 },
   label: {
-    fontSize: 10.5,
+    fontSize: 11,
     fontWeight: "600",
     color: colors.ink,
-    textAlign: "center",
-    lineHeight: 15,
+    lineHeight: 16,
+    textAlign: "right",
   },
-  soon: { fontSize: 9, color: colors.muted, fontWeight: "600" },
+  bottom: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    marginTop: space.sm,
+  },
+  badge: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    // الرمز في الجهة المقابلة للاسم، كما في التصميم المرجعي
+    marginStart: "auto",
+  },
+  glyph: { fontSize: 19, lineHeight: 24 },
+  image: { width: 24, height: 24 },
 });

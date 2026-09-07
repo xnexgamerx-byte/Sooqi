@@ -278,7 +278,7 @@ export const categorySeed: SeedCategory[] = [
   { slug: "pets", nameAr: "حيوانات وإكسسوارات", iconAsset: "pets" },
   {
     slug: "business-equipment",
-    nameAr: "تجهيزات ومعدات الشركات",
+    nameAr: "تجهيزات شركات",
     iconAsset: "business-equipment",
   },
   { slug: "beauty-health", nameAr: "جمال وصحة", iconAsset: "beauty-health" },

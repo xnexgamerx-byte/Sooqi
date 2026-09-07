@@ -89,7 +89,7 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        <SectionHeader title="الأقسام" />
+        <SectionHeader title="الأقسام" hint="الباهتة تُفتح قريباً" />
         <View style={styles.grid}>
           {(categories.data ?? []).map((category) => (
             <View key={category.slug} style={styles.gridCell}>
@@ -149,14 +149,19 @@ export default function HomeScreen() {
 
 function SectionHeader({
   title,
+  hint,
   onMore,
 }: {
   title: string;
+  hint?: string;
   onMore?: () => void;
 }) {
   return (
     <View style={styles.sectionHead}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <View>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {hint ? <Text style={styles.sectionHint}>{hint}</Text> : null}
+      </View>
       {onMore ? (
         <Pressable onPress={onMore} accessibilityRole="button">
           <Text style={styles.more}>المزيد</Text>
@@ -169,7 +174,12 @@ function SectionHeader({
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { paddingBottom: space.xl },
-  head: { backgroundColor: colors.surface, paddingTop: space.sm },
+  head: {
+    backgroundColor: colors.surface,
+    paddingTop: space.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.line,
+  },
   topRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -180,14 +190,16 @@ const styles = StyleSheet.create({
   topIcons: { flexDirection: "row", alignItems: "center", gap: space.lg },
   banner: {
     marginHorizontal: space.lg,
-    marginTop: space.md,
+    marginTop: space.lg,
     backgroundColor: colors.blue,
     borderRadius: radius.xl,
-    padding: space.xl,
-    gap: 6,
+    paddingHorizontal: space.xl,
+    paddingVertical: space.lg + 2,
+    gap: 5,
+    overflow: "hidden",
   },
-  bannerTitle: { color: colors.white, fontSize: 19, fontWeight: "700" },
-  bannerBody: { color: "rgba(255,255,255,0.85)", fontSize: 12.5 },
+  bannerTitle: { color: colors.white, fontSize: 17.5, fontWeight: "700" },
+  bannerBody: { color: "rgba(255,255,255,0.82)", fontSize: 12.5, lineHeight: 19 },
   bannerCta: {
     alignSelf: "flex-start",
     backgroundColor: colors.orange,
@@ -205,19 +217,25 @@ const styles = StyleSheet.create({
     paddingTop: space.xl,
     paddingBottom: space.md,
   },
-  sectionTitle: { fontSize: 17.5, fontWeight: "600", color: colors.ink },
+  sectionTitle: {
+    fontSize: 16.5,
+    fontWeight: "700",
+    color: colors.ink,
+    letterSpacing: -0.2,
+  },
+  sectionHint: { fontSize: 11.5, color: colors.muted, marginTop: 1 },
   more: { color: colors.blue, fontSize: 13.5, fontWeight: "600" },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: space.lg - 4,
   },
-  gridCell: { width: "25%", padding: 4 },
+  gridCell: { width: "33.333%", padding: 4 },
   listGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: space.lg - 4,
   },
-  listCell: { width: "33.333%", padding: 4 },
+  listCell: { width: "50%", padding: 5 },
   block: { minHeight: 160 },
 });
