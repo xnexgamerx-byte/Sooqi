@@ -284,6 +284,28 @@ pnpm --filter @souqna/db promote 07701234567 moderator
   تُبنى من `R2_PUBLIC_URL`: بدونها تفشل كل صورة بصمت ويوافق المشرف على
   إعلان لا يراه.
 
+## بناء APK
+
+مربوط بمشروع EAS، ومعرّفه في `packages/app/app.json`.
+
+```bash
+npm install -g eas-cli
+eas login
+cd packages/app
+eas build --platform android --profile preview   # ملف APK للتجربة
+eas build --platform android --profile production # حزمة AAB لمتجر جوجل
+```
+
+`preview` يعطيك APK تنزّله على أي تلفون مباشرة، وهو ما تحتاجه للتجربة قبل
+النشر. `production` يعطيك AAB، وهو الشكل الوحيد الذي يقبله متجر جوجل.
+
+البناء يجري على خوادم Expo لا على جهازك: لا تحتاج Android Studio ولا
+حاسوباً قوياً. الحساب المجاني يعطيك عدداً محدوداً من البناءات شهرياً وهي
+تكفي بفارق كبير في البداية.
+
+**قبل أول بناء إنتاجي:** غيّر `EXPO_PUBLIC_API_URL` إلى عنوان خادمك
+الحقيقي لا `localhost`، وإلا خرج التطبيق للناس وهو يحاول الاتصال بأجهزتهم.
+
 ## ما زال ناقصاً
 
 - [ ] مهمة دورية تحذف كائنات R2 التي لا يشير إليها أي إعلان
