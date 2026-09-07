@@ -12,6 +12,7 @@ import { registerCategoryRoutes } from "./routes/categories.js";
 import { registerChatRoutes } from "./routes/chat.js";
 import { registerEngagementRoutes } from "./routes/engagement.js";
 import { registerCityRoutes } from "./routes/cities.js";
+import { registerDashboard } from "./routes/dashboard.js";
 import { registerListingRoutes } from "./routes/listings.js";
 import { registerUploadRoutes } from "./routes/uploads.js";
 import type { AppContext } from "./context.js";
@@ -95,6 +96,9 @@ app.setNotFoundHandler((_request, reply) =>
 registerAuth(app, context);
 
 app.get("/health", async () => ({ ok: true, at: new Date().toISOString() }));
+
+// لوحة الإشراف خارج بادئة /api: هي صفحة لا واجهة برمجية
+registerDashboard(app, context);
 
 await app.register(
   async (instance) => {

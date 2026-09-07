@@ -5,15 +5,19 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": "./dist/index.js" },
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
     "build": "tsc --build",
     "typecheck": "tsc --build",
     "generate": "drizzle-kit generate",
     "push": "drizzle-kit push",
-    "seed": "tsx src/seed/run.ts"
+    "seed": "tsx src/seed/run.ts",
+    "promote": "tsx src/seed/promote.ts"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
     "postgres": "^3.4.7"
   },

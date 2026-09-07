@@ -84,6 +84,9 @@ importers:
 
   packages/db:
     dependencies:
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
       drizzle-orm:
         specifier: ^0.44.6
         version: 0.44.7(postgres@3.4.9)
@@ -121,9 +124,6 @@ importers:
       '@souqna/db':
         specifier: workspace:*
         version: link:../db
-      dotenv:
-        specifier: ^17.2.3
-        version: 17.4.2
       drizzle-orm:
         specifier: ^0.44.6
         version: 0.44.7(postgres@3.4.9)

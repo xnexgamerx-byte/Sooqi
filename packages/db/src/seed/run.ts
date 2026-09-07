@@ -3,12 +3,14 @@
  *
  *   pnpm db:seed
  */
-import "dotenv/config";
+import { loadRootEnv } from "../env-file.js";
 import { eq, sql } from "drizzle-orm";
 import { createDb } from "../index.js";
 import { categories, categoryFields, cities } from "../schema.js";
 import { categorySeed, type SeedCategory, type SeedField } from "./categories.js";
 import { citySeed } from "./cities.js";
+
+loadRootEnv();
 
 const url = process.env.DATABASE_URL;
 if (!url) {

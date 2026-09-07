@@ -1,5 +1,7 @@
-import "dotenv/config";
+import { loadRootEnv } from "@souqna/db";
 import { z } from "zod";
+
+loadRootEnv();
 
 const schema = z.object({
   NODE_ENV: z

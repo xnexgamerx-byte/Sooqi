@@ -4,6 +4,7 @@ import {
   cities,
   listingImages,
   listings,
+  messages,
   reports,
   users,
 } from "@souqna/db";
@@ -244,6 +245,141 @@ export function registerAdminRoutes(app: FastifyInstance, ctx: AppContext) {
       })),
     };
   });
+
+  /**
+   * يفتح هدف البلاغ أياً كان نوعه.
+   *
+   * لا يكفي أن يقرأ المشرف «إعلان وهمي» ثم يحكم: لازم يشوف الإعلان. ومسار
+   * ‎/listings/:id العام يخفي كل ما ليس منشوراً، فالبلاغ على إعلان انتهى أو
+   * رُفض يصير غير قابل للفحص. هذا المسار يتخطى ذلك القيد للمشرف وحده.
+   */
+  app.get<{ Params: { id: string } }>(
+    "/admin/reports/:id/target",
+    async (request) => {
+      await requireModerator(ctx, request);
+
+      const [report] = await ctx.db
+        .select({
+          targetType: reports.targetType,
+          targetId: reports.targetId,
+        })
+        .from(reports)
+        .where(eq(reports.id, request.params.id))
+        .limit(1);
+
+      if (!report) throw notFound("البلاغ غير موجود", "report_not_found");
+
+      if (report.targetType === "listing") {
+        const [row] = await ctx.db
+          .select({
+            id: listings.id,
+            refNo: listings.refNo,
+            title: listings.title,
+            description: listings.description,
+            priceIqd: listings.priceIqd,
+            status: listings.status,
+            createdAt: listings.createdAt,
+            categoryNameAr: categories.nameAr,
+            cityNameAr: cities.nameAr,
+            sellerId: users.id,
+            sellerName: users.name,
+            sellerPhone: users.phone,
+            sellerPublicId: users.publicId,
+            sellerBanned: users.isBanned,
+          })
+          .from(listings)
+          .innerJoin(categories, eq(categories.id, listings.categoryId))
+          .innerJoin(cities, eq(cities.id, listings.cityId))
+          .innerJoin(users, eq(users.id, listings.userId))
+          .where(eq(listings.id, report.targetId))
+          .limit(1);
+
+        if (!row) return { kind: "missing" as const };
+
+        const images = await listingImageMap(ctx, [row.id]);
+        return {
+          kind: "listing" as const,
+          listing: { ...row, images: images.get(row.id) ?? [] },
+        };
+      }
+
+      if (report.targetType === "user") {
+        const [row] = await ctx.db
+          .select({
+            id: users.id,
+            publicId: users.publicId,
+            name: users.name,
+            phone: users.phone,
+            isBanned: users.isBanned,
+            banReason: users.banReason,
+            role: users.role,
+            createdAt: users.createdAt,
+          })
+          .from(users)
+          .where(eq(users.id, report.targetId))
+          .limit(1);
+
+        if (!row) return { kind: "missing" as const };
+
+        const [tally] = await ctx.db
+          .select({ value: count() })
+          .from(listings)
+          .where(
+            and(
+              eq(listings.userId, row.id),
+              eq(listings.status, "published"),
+            ),
+          );
+
+        return {
+          kind: "user" as const,
+          user: { ...row, publishedListings: tally?.value ?? 0 },
+        };
+      }
+
+      /**
+       * رسالة مُبلَّغ عنها.
+       *
+       * نعيد الرسالة وجيرانها القريبين فقط لا المحادثة كلها: المشرف يحتاج
+       * سياقاً يحكم به، لا تصريحاً بقراءة مراسلات الناس الخاصة.
+       */
+      const [target] = await ctx.db
+        .select({
+          id: messages.id,
+          conversationId: messages.conversationId,
+          createdAt: messages.createdAt,
+        })
+        .from(messages)
+        .where(eq(messages.id, report.targetId))
+        .limit(1);
+
+      if (!target) return { kind: "missing" as const };
+
+      const context = await ctx.db
+        .select({
+          id: messages.id,
+          body: messages.body,
+          createdAt: messages.createdAt,
+          senderId: messages.senderId,
+          senderName: users.name,
+          senderPublicId: users.publicId,
+        })
+        .from(messages)
+        .innerJoin(users, eq(users.id, messages.senderId))
+        .where(eq(messages.conversationId, target.conversationId))
+        .orderBy(asc(messages.createdAt))
+        .limit(200);
+
+      const index = context.findIndex((row) => row.id === target.id);
+      const from = Math.max(0, index - 3);
+
+      return {
+        kind: "message" as const,
+        reportedId: target.id,
+        messages: context.slice(from, index + 4),
+      };
+    },
+  );
 
   app.post<{ Params: { id: string } }>(
     "/admin/reports/:id/resolve",
